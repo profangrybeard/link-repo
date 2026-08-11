@@ -1,65 +1,60 @@
 {
   "updated": "11 Aug 2026",
   "categories": [
-    { "name": "IDE, Code & Debug", "items": [
-      {"t":"Install & configure Visual Studio Tools for Unity","u":"https://learn.microsoft.com/en-us/visualstudio/gamedev/unity/get-started/getting-started-with-visual-studio-tools-for-unity?pivots=windows"},
-      {"t":"Unity Manual: Integrated development environment (IDE) support","u":"https://docs.unity3d.com/6000.0/Documentation/Manual/scripting-ide-support.html"},
-      {"t":"Unity Manual: Debug C# code in Unity","u":"https://docs.unity3d.com/Manual/managed-code-debugging.html"},
-      {"t":"Unity Scripting API: Debug.Log","u":"https://docs.unity3d.com/ScriptReference/Debug.Log.html"}
+    { "name": "Software & Setup", "items": [
+      {"g":"Engines","t":"Unity Hub","u":"https://unity.com/unity-hub"},
+      {"g":"Engines","t":"Unity 6 — download","u":"https://unity.com/releases/unity-6"},
+      {"g":"Code editors","t":"Visual Studio","u":"https://visualstudio.microsoft.com/"},
+      {"g":"Code editors","t":"Sublime Text","u":"https://www.sublimetext.com/"},
+      {"g":"Code editors","t":"Beyond Compare","u":"https://www.scootersoftware.com/"},
+      {"g":"Art & painting","t":"Blender","u":"https://www.blender.org/"},
+      {"g":"Art & painting","t":"Adobe Photoshop","u":"https://www.adobe.com/products/photoshop.html"},
+      {"g":"Art & painting","t":"Krita","u":"https://krita.org/en/"},
+      {"g":"Source control","t":"GitHub","u":"https://github.com/"},
+      {"g":"Source control","t":"TortoiseSVN","u":"https://tortoisesvn.net/"},
+      {"g":"AI assistants","t":"Claude Code","u":"https://claude.com/product/claude-code"},
+      {"g":"AI assistants","t":"Google Gemini","u":"https://gemini.google.com/app"},
+      {"g":"Utilities","t":"WinRAR","u":"https://www.win-rar.com/start.html?&L=0"},
+      {"g":"Utilities","t":"7-Zip","u":"https://www.7-zip.org/"}
     ]},
-    { "name": "YouTube Projects Reference", "items": [
+    { "name": "Course Projects", "items": [
       {"g":"Frogger in Unity","t":"Zigurous — How to make Frogger in Unity (complete tutorial)","u":"https://www.youtube.com/watch?v=GxlxZ5q__Tc"},
-      {"g":"Donut in Blender","t":"Important Blender shortcuts for object modeling","u":"https://blender.stackexchange.com/questions/107406/important-blender-shorcuts-for-object-modeling"},
       {"g":"Donut in Blender","t":"Blender Guru — Blender tutorial for complete beginners, part 1","u":"https://www.youtube.com/watch?v=B0J27sf9N1Y"},
+      {"g":"Donut in Blender","t":"Important Blender shortcuts for object modeling","u":"https://blender.stackexchange.com/questions/107406/important-blender-shorcuts-for-object-modeling"},
       {"g":"Physics Materials","t":"LlamAcademy — Physic materials, explained","u":"https://www.youtube.com/watch?v=Z3TE8cejwzk"}
     ]},
-    { "name": "Laws of Physics", "items": [
-      {"t":"The Physics Classroom — Newton's first law","u":"https://www.physicsclassroom.com/class/newtlaws/Lesson-1/Newton-s-First-Law"},
-      {"t":"The Physics Classroom — Newton's second law","u":"https://www.physicsclassroom.com/class/newtlaws/Lesson-3/Newton-s-Second-Law"},
-      {"t":"The Physics Classroom — Newton's third law","u":"https://www.physicsclassroom.com/class/newtlaws/Lesson-4/Newton-s-Third-Law"},
-      {"t":"Khan Academy — What is Newton's first law?","u":"https://www.khanacademy.org/science/physics/forces-newtons-laws/newtons-laws-of-motion/a/what-is-newtons-first-law"},
-      {"t":"Khan Academy — What is friction?","u":"https://www.khanacademy.org/science/physics/forces-newtons-laws/friction/a/what-is-friction"},
-      {"t":"Scientific American — Bring science home: bouncing ball","u":"https://www.scientificamerican.com/article/bring-science-home-bouncing-ball/"}
-    ]},
     { "name": "Unity", "items": [
+      {"g":"Setup & IDE","t":"Install & configure Visual Studio Tools for Unity","u":"https://learn.microsoft.com/en-us/visualstudio/gamedev/unity/get-started/getting-started-with-visual-studio-tools-for-unity?pivots=windows"},
+      {"g":"Setup & IDE","t":"Unity Manual: IDE support","u":"https://docs.unity3d.com/6000.0/Documentation/Manual/scripting-ide-support.html"},
+      {"g":"Setup & IDE","t":"Unity Manual: Debug C# code in Unity","u":"https://docs.unity3d.com/Manual/managed-code-debugging.html"},
+      {"g":"Setup & IDE","t":"Unity Scripting API: Debug.Log","u":"https://docs.unity3d.com/ScriptReference/Debug.Log.html"},
+      {"g":"Scripting","t":"Unity Manual: Fundamental Unity types","u":"https://docs.unity3d.com/6000.0/Documentation/Manual/fundamental-unity-types.html"},
+      {"g":"Scripting","t":"Update, LateUpdate and FixedUpdate — when to use which","u":"https://medium.com/unity-coder-corner/unity-update-methods-explained-when-to-use-update-lateupdate-and-fixedupdate-for-smooth-gameplay-b1e2e02ace42"},
       {"g":"UI","t":"Unity Learn — QuickStart to TextMesh Pro","u":"https://learn.unity.com/tutorial/working-with-textmesh-pro"},
       {"g":"UI","t":"TextMesh Pro documentation","u":"https://docs.unity3d.com/Packages/com.unity.ugui@2.0/manual/TextMeshPro/index.html"},
-      {"g":"Code","t":"Unity Manual: Important classes","u":"https://docs.unity3d.com/2020.1/Documentation/Manual/ScriptingImportantClasses.html"},
-      {"g":"Code","t":"Update, LateUpdate and FixedUpdate — when to use which","u":"https://medium.com/unity-coder-corner/unity-update-methods-explained-when-to-use-update-lateupdate-and-fixedupdate-for-smooth-gameplay-b1e2e02ace42"},
-      {"g":"Physics","t":"Unity Manual: Physic material","u":"https://docs.unity3d.com/550/Documentation/Manual/class-PhysicMaterial.html"},
+      {"g":"Physics","t":"Unity Manual: Physics Material asset reference","u":"https://docs.unity3d.com/6000.0/Documentation/Manual/class-PhysicsMaterial.html"},
       {"g":"Physics","t":"Unity Manual: Collision","u":"https://docs.unity3d.com/6000.0/Documentation/Manual/collision-section.html"},
       {"g":"Physics","t":"Unity Manual: Rigidbody component reference","u":"https://docs.unity3d.com/Manual/class-Rigidbody.html"},
-      {"g":"Store","t":"Starter Assets — FirstPerson","u":"https://assetstore.unity.com/packages/essentials/starter-assets-firstperson-updates-in-new-charactercontroller-pa-196525"},
-      {"g":"Store","t":"Starter Assets — ThirdPerson","u":"https://assetstore.unity.com/packages/essentials/starter-assets-thirdperson-updates-in-new-charactercontroller-pa-196526"},
-      {"g":"Store","t":"Starter Assets — Character Controllers (URP)","u":"https://assetstore.unity.com/packages/essentials/starter-assets-character-controllers-urp-267961"},
-      {"g":"Version control","t":"Overview of features — Unity Version Control 2.3.1","u":"https://docs.unity3d.com/Packages/com.unity.collab-proxy@2.3/manual/MainFeatures.html"},
-      {"g":"Performance & profiling","t":"Unity Manual: Unity Profiler","u":"https://docs.unity3d.com/Manual/Profiler.html"},
-      {"g":"Performance & profiling","t":"How to use Unity's memory profiling tools","u":"https://unity.com/how-to/use-memory-profiling-unity"},
-      {"g":"Performance & profiling","t":"Ultimate guide to profiling Unity games","u":"https://unity.com/resources/ultimate-guide-to-profiling-unity-games"},
-      {"g":"Unity Cookbook 2023","t":"Unity 2023 Cookbook, fifth edition — source code","u":"https://github.com/PacktPublishing/Unity-2023-Cookbook-Fifth-Edition"}
+      {"g":"Assets","t":"Starter Assets — FirstPerson","u":"https://assetstore.unity.com/packages/essentials/starter-assets-firstperson-updates-in-new-charactercontroller-pa-196525"},
+      {"g":"Assets","t":"Starter Assets — ThirdPerson","u":"https://assetstore.unity.com/packages/essentials/starter-assets-thirdperson-updates-in-new-charactercontroller-pa-196526"},
+      {"g":"Assets","t":"Starter Assets — Character Controllers (URP)","u":"https://assetstore.unity.com/packages/essentials/starter-assets-character-controllers-urp-267961"},
+      {"g":"Version control","t":"Overview of features — Unity Version Control","u":"https://docs.unity3d.com/Packages/com.unity.collab-proxy@2.3/manual/MainFeatures.html"},
+      {"g":"Performance","t":"Unity Manual: Unity Profiler","u":"https://docs.unity3d.com/Manual/Profiler.html"},
+      {"g":"Performance","t":"How to use Unity's memory profiling tools","u":"https://unity.com/how-to/use-memory-profiling-unity"},
+      {"g":"Performance","t":"Ultimate guide to profiling Unity games","u":"https://unity.com/resources/ultimate-guide-to-profiling-unity-games"},
+      {"g":"Tutorials","t":"Catlike Coding — Hex map, part 1","u":"https://catlikecoding.com/unity/tutorials/hex-map/part-1/"},
+      {"g":"Tutorials","t":"Unity 2023 Cookbook, fifth edition — source code","u":"https://github.com/PacktPublishing/Unity-2023-Cookbook-Fifth-Edition"}
+    ]},
+    { "name": "Unreal", "items": [
+      {"t":"Tom Looman — Unreal Engine tutorials & courses","u":"https://tomlooman.com/"},
+      {"t":"Cedric Neukirchen — Unreal Engine documentation","u":"https://cedric-neukirchen.net/docs/intro"}
     ]},
     { "name": "Blender", "items": [
+      {"t":"Blender Manual (latest)","u":"https://docs.blender.org/manual/en/latest/"},
       {"t":"Important Blender shortcuts for object modeling","u":"https://blender.stackexchange.com/questions/107406/important-blender-shorcuts-for-object-modeling"},
       {"t":"Blender Guru — Blender tutorial for complete beginners, part 1","u":"https://www.youtube.com/watch?v=B0J27sf9N1Y"},
       {"t":"FBX — Blender Manual","u":"https://docs.blender.org/manual/en/2.80/addons/io_scene_fbx.html"},
-      {"t":"Making sense of the FBX export settings","u":"https://blender.stackexchange.com/questions/306550/making-sense-of-the-fbx-export-settings-in-blender-when-the-fbx-files-are-import"},
-      {"t":"Blender Manual (latest)","u":"https://docs.blender.org/manual/en/latest/"}
-    ]},
-    { "name": "Code/Tools", "items": [
-      {"g":"Modeling","t":"Blender","u":"https://www.blender.org/"},
-      {"g":"Painting","t":"Adobe Photoshop","u":"https://www.adobe.com/products/photoshop.html"},
-      {"g":"Painting","t":"Krita","u":"https://krita.org/en/"},
-      {"g":"Code","t":"Visual Studio","u":"https://visualstudio.microsoft.com/"},
-      {"g":"Code","t":"Sublime Text","u":"https://www.sublimetext.com/"},
-      {"g":"Code","t":"Beyond Compare","u":"https://www.scootersoftware.com/"},
-      {"g":"Source control","t":"TortoiseSVN","u":"https://tortoisesvn.net/"},
-      {"g":"Source control","t":"GitHub","u":"https://github.com/"},
-      {"g":"AI coding assistants","t":"Claude Code","u":"https://claude.com/product/claude-code"},
-      {"g":"AI coding assistants","t":"Google Gemini","u":"https://gemini.google.com/app"},
-      {"g":"Engines","t":"Unity Hub","u":"https://unity.com/unity-hub"},
-      {"g":"Engines","t":"Unity 6 — download","u":"https://unity.com/releases/unity-6"},
-      {"g":"Zip/RAR","t":"WinRAR","u":"https://www.win-rar.com/start.html?&L=0"},
-      {"g":"Zip/RAR","t":"7-Zip","u":"https://www.7-zip.org/"}
+      {"t":"Making sense of the FBX export settings","u":"https://blender.stackexchange.com/questions/306550/making-sense-of-the-fbx-export-settings-in-blender-when-the-fbx-files-are-import"}
     ]},
     { "name": "Game Capture", "items": [
       {"g":"Recording","t":"OBS Studio — download","u":"https://obsproject.com/download"},
@@ -68,16 +63,26 @@
       {"g":"Editing","t":"DaVinci Resolve — overview","u":"https://www.blackmagicdesign.com/products/davinciresolve"},
       {"g":"Editing","t":"DaVinci Resolve — downloads","u":"https://www.blackmagicdesign.com/support/"}
     ]},
+    { "name": "Visual Reference", "items": [
+      {"g":"Color palettes","t":"Colormind — palette generator","u":"http://colormind.io/"},
+      {"g":"Color palettes","t":"Movies in Color","u":"https://moviesincolor.com/"},
+      {"g":"Color palettes","t":"Cinema Palette","u":"https://cinema-palette.web.app/"},
+      {"g":"Color palettes","t":"Movie color barcodes","u":"https://screenmusings.org/color/movie-color-barcodes/"},
+      {"g":"Shot composition","t":"Shot.Cafe — searchable film still database","u":"https://shot.cafe/"},
+      {"g":"Character & model sheets","t":"Model sheets & production drawings","u":"https://livlily.blogspot.com/2010/11/model-sheets-production-drawings.html"},
+      {"g":"Character & model sheets","t":"Reference Catalogue — hyper-detailed animation, 1988–1999","u":"https://profangrybeard.github.io/90sDGA/"}
+    ]},
+    { "name": "Physics for Games", "items": [
+      {"t":"The Physics Classroom — Newton's first law","u":"https://www.physicsclassroom.com/class/newtlaws/Lesson-1/Newton-s-First-Law"},
+      {"t":"The Physics Classroom — Newton's second law","u":"https://www.physicsclassroom.com/class/newtlaws/Lesson-3/Newton-s-Second-Law"},
+      {"t":"The Physics Classroom — Newton's third law","u":"https://www.physicsclassroom.com/class/newtlaws/Lesson-4/Newton-s-Third-Law"},
+      {"t":"Khan Academy — What is Newton's first law?","u":"https://www.khanacademy.org/science/physics/forces-newtons-laws/newtons-laws-of-motion/a/what-is-newtons-first-law"},
+      {"t":"Khan Academy — What is friction?","u":"https://www.khanacademy.org/science/physics/forces-newtons-laws/friction/a/what-is-friction"},
+      {"t":"Scientific American — Bring science home: bouncing ball","u":"https://www.scientificamerican.com/article/bring-science-home-bouncing-ball/"}
+    ]},
     { "name": "Game Design", "items": [
       {"t":"Eric Zimmerman — Secret history of The Metagame","u":"https://ericzimmerman.wordpress.com/2011/02/18/secret-history-of-the-metagame/"},
       {"t":"The Metagame — the card game","u":"http://metaga.me/"}
-    ]},
-    { "name": "Unreal", "items": [
-      {"t":"Cedric Neukirchen — Unreal Engine documentation","u":"https://cedric-neukirchen.net/docs/intro"}
-    ]},
-    { "name": "Color", "items": [
-      {"t":"Colormind — palette generator","u":"http://colormind.io/"},
-      {"t":"Movie color palettes","u":"https://screenmusings.org/color/movie-color-barcodes/"}
     ]}
   ]
 }
