@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#101014">
+<title>Link Repo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#101014;
+    --panel:#17171F;
+    --panel-lift:#1E1E28;
+    --rule:#2B2B38;
+    --text:#E6E4E0;
+    --dim:#8A8796;
+    --dimmer:#615F6E;
+    --gold:#D4A548;
+    --focus:#7FA8C9;
+    --pad:clamp(16px, 4vw, 28px);
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--text);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+    font-size:16px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 var(--pad);}
+
+  /* ---- masthead ---- */
+  header{padding:clamp(32px,9vw,64px) 0 20px;}
+  h1{
+    font-family:"Bricolage Grotesque",system-ui,sans-serif;
+    font-optical-sizing:auto;
+    font-weight:700;
+    font-size:clamp(38px,12vw,64px);
+    line-height:.95;
+    letter-spacing:-.03em;
+    margin:0;
+  }
+  .meta{
+    font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-size:12px;
+    color:var(--dimmer);
+    letter-spacing:.04em;
+    margin-top:14px;
+    text-transform:uppercase;
+  }
+  .meta b{color:var(--dim);font-weight:500;}
+
+  /* ---- search ---- */
+  .bar{
+    position:sticky;top:0;z-index:20;
+    background:linear-gradient(var(--ink) 78%, rgba(16,16,20,0));
+    padding:10px 0 16px;
+  }
+  .field{
+    display:flex;align-items:center;gap:10px;
+    background:var(--panel);
+    border:1px solid var(--rule);
+    border-radius:10px;
+    padding:0 12px;
+    transition:border-color .15s ease;
+  }
+  .field:focus-within{border-color:var(--focus);}
+  .field svg{flex:none;color:var(--dimmer);}
+  #q{
+    flex:1;min-width:0;
+    background:none;border:0;outline:none;
+    color:var(--text);
+    font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-size:15px;
+    padding:13px 0;
+  }
+  #q::placeholder{color:var(--dimmer);}
+  .kbd{
+    flex:none;
+    font-family:"IBM Plex Mono",monospace;font-size:11px;
+    color:var(--dimmer);
+    border:1px solid var(--rule);border-radius:4px;
+    padding:2px 6px;
+  }
+  #clear{
+    flex:none;display:none;
+    background:none;border:0;cursor:pointer;
+    color:var(--dim);font-size:18px;line-height:1;padding:6px;
+  }
+  .tools{
+    display:flex;justify-content:space-between;align-items:baseline;
+    margin-top:10px;
+    font-family:"IBM Plex Mono",monospace;font-size:11.5px;
+    color:var(--dimmer);letter-spacing:.04em;
+  }
+  .tools button{
+    background:none;border:0;cursor:pointer;padding:4px 0;
+    font:inherit;color:var(--dim);
+    border-bottom:1px solid var(--rule);
+  }
+  .tools button:hover{color:var(--gold);border-bottom-color:var(--gold);}
+
+  /* ---- category ---- */
+  .cat{border-top:1px solid var(--rule);}
+  .cat:last-of-type{border-bottom:1px solid var(--rule);}
+  .cat[hidden]{display:none;}
+  .head{
+    width:100%;display:flex;align-items:center;gap:14px;
+    background:none;border:0;cursor:pointer;
+    padding:16px 0;text-align:left;color:inherit;
+    font:inherit;
+  }
+  /* the barcode: a color signature per category, echoing the movie-colour-barcode
+     link in the Color section. Also does the wayfinding job of a colour code. */
+  .barcode{
+    flex:none;width:34px;height:44px;border-radius:3px;
+    background-size:100% 100%;
+    filter:saturate(.85);
+  }
+  .head h2{
+    flex:1;min-width:0;margin:0;
+    font-family:"Bricolage Grotesque",system-ui,sans-serif;
+    font-weight:500;font-size:clamp(19px,5vw,23px);
+    letter-spacing:-.015em;
+  }
+  .n{
+    flex:none;
+    font-family:"IBM Plex Mono",monospace;font-size:12px;
+    color:var(--dimmer);
+  }
+  .chev{flex:none;color:var(--dimmer);transition:transform .18s ease;}
+  .cat.open .chev{transform:rotate(90deg);}
+  .cat.open .head h2{color:#fff;}
+
+  .body{display:none;padding:0 0 18px 48px;}
+  .cat.open .body{display:block;}
+
+  .grp{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--gold);
+    margin:16px 0 8px;
+  }
+  .grp:first-child{margin-top:0;}
+
+  .lnk{
+    display:block;text-decoration:none;color:var(--text);
+    padding:9px 12px;margin:0 -12px;border-radius:8px;
+  }
+  .lnk[hidden]{display:none;}
+  .lnk:hover,.lnk:focus-visible{background:var(--panel-lift);}
+  .lnk .t{display:block;font-size:15.5px;line-height:1.35;}
+  .lnk:hover .t{color:var(--gold);}
+  .lnk .d{
+    display:block;
+    font-family:"IBM Plex Mono",monospace;
+    font-size:11px;color:var(--dimmer);margin-top:3px;
+  }
+
+  #empty{
+    display:none;padding:56px 0;text-align:center;
+    color:var(--dim);
+  }
+  #empty b{display:block;color:var(--text);font-size:17px;margin-bottom:6px;font-weight:500;}
+  #empty span{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--dimmer);}
+
+  footer{
+    padding:40px 0 56px;
+    font-family:"IBM Plex Mono",monospace;font-size:11px;
+    color:var(--dimmer);letter-spacing:.04em;
+  }
+
+  :focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px;}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Link&nbsp;Repo</h1>
+    <div class="meta"><b id="total">—</b> links · <b id="cats">—</b> categories · updated <b id="stamp">—</b></div>
+  </header>
+
+  <div class="bar">
+    <div class="field">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Search links" autocomplete="off" spellcheck="false" aria-label="Search links">
+      <button id="clear" type="button" aria-label="Clear search">×</button>
+      <span class="kbd" id="hint">/</span>
+    </div>
+    <div class="tools">
+      <span id="status">Tap a category to open it</span>
+      <button id="toggleAll" type="button">Expand all</button>
+    </div>
+  </div>
+
+  <main id="list"></main>
+
+  <div id="empty">
+    <b>No links match that</b>
+    <span>Try a shorter word, or a domain like unity3d</span>
+  </div>
+
+  <footer>Link Repo · static page · no tracking</footer>
+</div>
+
+<script>
+/* ============================================================
+   DATA — the master list. Edit only this array.
+   Each category: { name, items: [ { t: title, u: url, g: group } ] }
+   The g field is optional and creates a labelled subsection.
+   ============================================================ */
+const DATA = [
+{ name:"IDE, Code & Debug", items:[
+  {t:"Install & configure Visual Studio Tools for Unity", u:"https://learn.microsoft.com/en-us/visualstudio/gamedev/unity/get-started/getting-started-with-visual-studio-tools-for-unity?pivots=windows"},
+  {t:"Unity Manual: Integrated development environment (IDE) support", u:"https://docs.unity3d.com/6000.0/Documentation/Manual/scripting-ide-support.html"},
+  {t:"Unity Manual: Debug C# code in Unity", u:"https://docs.unity3d.com/Manual/managed-code-debugging.html"},
+  {t:"Unity Scripting API: Debug.Log", u:"https://docs.unity3d.com/ScriptReference/Debug.Log.html"}
+]},
+{ name:"YouTube Projects Reference", items:[
+  {g:"Frogger in Unity", t:"Zigurous — How to make Frogger in Unity (complete tutorial)", u:"https://www.youtube.com/watch?v=GxlxZ5q__Tc"},
+  {g:"Donut in Blender", t:"Important Blender shortcuts for object modeling", u:"https://blender.stackexchange.com/questions/107406/important-blender-shorcuts-for-object-modeling"},
+  {g:"Donut in Blender", t:"Blender Guru — Blender tutorial for complete beginners, part 1", u:"https://www.youtube.com/watch?v=B0J27sf9N1Y"},
+  {g:"Physics Materials", t:"LlamAcademy — Physic materials, explained", u:"https://www.youtube.com/watch?v=Z3TE8cejwzk"}
+]},
+{ name:"Laws of Physics", items:[
+  {t:"The Physics Classroom — Newton's first law", u:"https://www.physicsclassroom.com/class/newtlaws/Lesson-1/Newton-s-First-Law"},
+  {t:"The Physics Classroom — Newton's second law", u:"https://www.physicsclassroom.com/class/newtlaws/Lesson-3/Newton-s-Second-Law"},
+  {t:"The Physics Classroom — Newton's third law", u:"https://www.physicsclassroom.com/class/newtlaws/Lesson-4/Newton-s-Third-Law"},
+  {t:"Khan Academy — What is Newton's first law?", u:"https://www.khanacademy.org/science/physics/forces-newtons-laws/newtons-laws-of-motion/a/what-is-newtons-first-law"},
+  {t:"Khan Academy — What is friction?", u:"https://www.khanacademy.org/science/physics/forces-newtons-laws/friction/a/what-is-friction"},
+  {t:"Scientific American — Bring science home: bouncing ball", u:"https://www.scientificamerican.com/article/bring-science-home-bouncing-ball/"}
+]},
+{ name:"Unity", items:[
+  {g:"UI", t:"Unity Learn — QuickStart to TextMesh Pro", u:"https://learn.unity.com/tutorial/working-with-textmesh-pro"},
+  {g:"UI", t:"TextMesh Pro documentation", u:"https://docs.unity3d.com/Packages/com.unity.ugui@2.0/manual/TextMeshPro/index.html"},
+  {g:"Code", t:"Unity Manual: Important classes", u:"https://docs.unity3d.com/2020.1/Documentation/Manual/ScriptingImportantClasses.html"},
+  {g:"Code", t:"Update, LateUpdate and FixedUpdate — when to use which", u:"https://medium.com/unity-coder-corner/unity-update-methods-explained-when-to-use-update-lateupdate-and-fixedupdate-for-smooth-gameplay-b1e2e02ace42"},
+  {g:"Physics", t:"Unity Manual: Physic material", u:"https://docs.unity3d.com/550/Documentation/Manual/class-PhysicMaterial.html"},
+  {g:"Physics", t:"Unity Manual: Collision", u:"https://docs.unity3d.com/6000.0/Documentation/Manual/collision-section.html"},
+  {g:"Physics", t:"Unity Manual: Rigidbody component reference", u:"https://docs.unity3d.com/Manual/class-Rigidbody.html"},
+  {g:"Store", t:"Starter Assets — FirstPerson", u:"https://assetstore.unity.com/packages/essentials/starter-assets-firstperson-updates-in-new-charactercontroller-pa-196525"},
+  {g:"Store", t:"Starter Assets — ThirdPerson", u:"https://assetstore.unity.com/packages/essentials/starter-assets-thirdperson-updates-in-new-charactercontroller-pa-196526"},
+  {g:"Store", t:"Starter Assets — Character Controllers (URP)", u:"https://assetstore.unity.com/packages/essentials/starter-assets-character-controllers-urp-267961"},
+  {g:"Version control", t:"Overview of features — Unity Version Control 2.3.1", u:"https://docs.unity3d.com/Packages/com.unity.collab-proxy@2.3/manual/MainFeatures.html"},
+  {g:"Performance & profiling", t:"Unity Manual: Unity Profiler", u:"https://docs.unity3d.com/Manual/Profiler.html"},
+  {g:"Performance & profiling", t:"How to use Unity's memory profiling tools", u:"https://unity.com/how-to/use-memory-profiling-unity"},
+  {g:"Performance & profiling", t:"Ultimate guide to profiling Unity games", u:"https://unity.com/resources/ultimate-guide-to-profiling-unity-games"},
+  {g:"Unity Cookbook 2023", t:"Unity 2023 Cookbook, fifth edition — source code", u:"https://github.com/PacktPublishing/Unity-2023-Cookbook-Fifth-Edition"}
+]},
+{ name:"Blender", items:[
+  {t:"Important Blender shortcuts for object modeling", u:"https://blender.stackexchange.com/questions/107406/important-blender-shorcuts-for-object-modeling"},
+  {t:"Blender Guru — Blender tutorial for complete beginners, part 1", u:"https://www.youtube.com/watch?v=B0J27sf9N1Y"},
+  {t:"FBX — Blender Manual", u:"https://docs.blender.org/manual/en/2.80/addons/io_scene_fbx.html"},
+  {t:"Making sense of the FBX export settings", u:"https://blender.stackexchange.com/questions/306550/making-sense-of-the-fbx-export-settings-in-blender-when-the-fbx-files-are-import"},
+  {t:"Blender Manual (latest)", u:"https://docs.blender.org/manual/en/latest/"}
+]},
+{ name:"Code/Tools", items:[
+  {g:"Modeling", t:"Blender", u:"https://www.blender.org/"},
+  {g:"Painting", t:"Adobe Photoshop", u:"https://www.adobe.com/products/photoshop.html"},
+  {g:"Painting", t:"Krita", u:"https://krita.org/en/"},
+  {g:"Code", t:"Visual Studio", u:"https://visualstudio.microsoft.com/"},
+  {g:"Code", t:"Sublime Text", u:"https://www.sublimetext.com/"},
+  {g:"Code", t:"Beyond Compare", u:"https://www.scootersoftware.com/"},
+  {g:"Source control", t:"TortoiseSVN", u:"https://tortoisesvn.net/"},
+  {g:"Source control", t:"GitHub", u:"https://github.com/"},
+  {g:"AI coding assistants", t:"Claude Code", u:"https://claude.com/product/claude-code"},
+  {g:"AI coding assistants", t:"Google Gemini", u:"https://gemini.google.com/app"},
+  {g:"Engines", t:"Unity Hub", u:"https://unity.com/unity-hub"},
+  {g:"Engines", t:"Unity 6 — download", u:"https://unity.com/releases/unity-6"},
+  {g:"Zip/RAR", t:"WinRAR", u:"https://www.win-rar.com/start.html?&L=0"},
+  {g:"Zip/RAR", t:"7-Zip", u:"https://www.7-zip.org/"}
+]},
+{ name:"Game Design", items:[
+  {t:"Eric Zimmerman — Secret history of The Metagame", u:"https://ericzimmerman.wordpress.com/2011/02/18/secret-history-of-the-metagame/"},
+  {t:"The Metagame — the card game", u:"http://metaga.me/"}
+]},
+{ name:"Unreal", items:[
+  {t:"Cedric Neukirchen — Unreal Engine documentation", u:"https://cedric-neukirchen.net/docs/intro"}
+]},
+{ name:"Color", items:[
+  {t:"Colormind — palette generator", u:"http://colormind.io/"},
+  {t:"Movie color palettes", u:"https://screenmusings.org/color/movie-color-barcodes/"}
+]}
+];
+
+const UPDATED = "11 Aug 2026";
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+const list = document.getElementById('list');
+
+function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+
+// deterministic colour barcode per category
+function barcode(name){
+  let seed = hash(name), stops = [], n = 22, pos = 0;
+  const rnd = () => { seed = (seed*1664525 + 1013904223) >>> 0; return seed/4294967296; };
+  const base = rnd()*360;
+  for(let i=0;i<n;i++){
+    const w = 100/n;
+    const h = (base + (rnd()-0.5)*90 + (rnd()<0.18 ? 180 : 0) + 360) % 360;
+    const s = 22 + rnd()*40;
+    const l = 26 + rnd()*38;
+    const c = 'hsl(' + h.toFixed(0) + ' ' + s.toFixed(0) + '% ' + l.toFixed(0) + '%)';
+    stops.push(c + ' ' + pos.toFixed(2) + '%', c + ' ' + (pos+w).toFixed(2) + '%');
+    pos += w;
+  }
+  return 'linear-gradient(90deg, ' + stops.join(',') + ')';
+}
+
+function domain(u){
+  try{ return new URL(u).hostname.replace(/^www./,''); }catch(e){ return ''; }
+}
+
+let total = 0;
+DATA.forEach((cat, ci) => {
+  total += cat.items.length;
+
+  const sec = document.createElement('section');
+  sec.className = 'cat';
+
+  const head = document.createElement('button');
+  head.className = 'head';
+  head.type = 'button';
+  head.setAttribute('aria-expanded','false');
+  head.innerHTML =
+    '<span class="barcode" style="background-image:' + barcode(cat.name) + '"></span>' +
+    '<h2></h2>' +
+    '<span class="n">' + cat.items.length + '</span>' +
+    '<svg class="chev" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
+  head.querySelector('h2').textContent = cat.name;
+
+  const body = document.createElement('div');
+  body.className = 'body';
+  body.id = 'b' + ci;
+  head.setAttribute('aria-controls', body.id);
+
+  let lastGroup = null;
+  cat.items.forEach(it => {
+    if(it.g && it.g !== lastGroup){
+      const g = document.createElement('div');
+      g.className = 'grp';
+      g.textContent = it.g;
+      body.appendChild(g);
+      lastGroup = it.g;
+    }
+    const a = document.createElement('a');
+    a.className = 'lnk';
+    a.href = it.u;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    const t = document.createElement('span'); t.className = 't'; t.textContent = it.t;
+    const d = document.createElement('span'); d.className = 'd'; d.textContent = domain(it.u);
+    a.append(t, d);
+    a.dataset.hay = (it.t + ' ' + (it.g||'') + ' ' + cat.name + ' ' + it.u).toLowerCase();
+    body.appendChild(a);
+  });
+
+  head.addEventListener('click', () => {
+    const open = sec.classList.toggle('open');
+    head.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  sec.append(head, body);
+  list.appendChild(sec);
+});
+
+document.getElementById('total').textContent = total;
+document.getElementById('cats').textContent = DATA.length;
+document.getElementById('stamp').textContent = UPDATED;
+
+/* ============================================================
+   SEARCH
+   ============================================================ */
+const q = document.getElementById('q');
+const clear = document.getElementById('clear');
+const hint = document.getElementById('hint');
+const empty = document.getElementById('empty');
+const status = document.getElementById('status');
+const toggleAll = document.getElementById('toggleAll');
+const sections = [...document.querySelectorAll('.cat')];
+
+function filter(){
+  const term = q.value.trim().toLowerCase();
+  clear.style.display = term ? 'block' : 'none';
+  hint.style.display = term ? 'none' : 'block';
+  let shown = 0;
+
+  sections.forEach(sec => {
+    const links = [...sec.querySelectorAll('.lnk')];
+    let hits = 0;
+    links.forEach(a => {
+      const match = !term || a.dataset.hay.includes(term);
+      a.hidden = !match;
+      if(match) hits++;
+    });
+    // group labels only make sense when something under them survives
+    let node = sec.querySelector('.body').firstChild, currentLabel = null, labelHasHit = false;
+    const labels = [];
+    while(node){
+      if(node.classList && node.classList.contains('grp')){
+        if(currentLabel) labels.push([currentLabel, labelHasHit]);
+        currentLabel = node; labelHasHit = false;
+      } else if(node.classList && node.classList.contains('lnk') && !node.hidden){
+        labelHasHit = true;
+      }
+      node = node.nextSibling;
+    }
+    if(currentLabel) labels.push([currentLabel, labelHasHit]);
+    labels.forEach(([el, keep]) => { el.hidden = !keep; });
+
+    sec.hidden = term && hits === 0;
+    if(term){
+      sec.classList.toggle('open', hits > 0);
+      sec.querySelector('.head').setAttribute('aria-expanded', hits > 0 ? 'true':'false');
+    }
+    sec.querySelector('.n').textContent = term ? hits : links.length;
+    shown += hits;
+  });
+
+  empty.style.display = (term && shown === 0) ? 'block' : 'none';
+  status.textContent = term
+    ? shown + ' of ' + total + ' links'
+    : 'Tap a category to open it';
+}
+
+q.addEventListener('input', filter);
+clear.addEventListener('click', () => { q.value=''; filter(); q.focus(); });
+
+toggleAll.addEventListener('click', () => {
+  const anyClosed = sections.some(s => !s.classList.contains('open'));
+  sections.forEach(s => {
+    s.classList.toggle('open', anyClosed);
+    s.querySelector('.head').setAttribute('aria-expanded', anyClosed ? 'true':'false');
+  });
+  toggleAll.textContent = anyClosed ? 'Collapse all' : 'Expand all';
+});
+
+document.addEventListener('keydown', e => {
+  if(e.key === '/' && document.activeElement !== q){ e.preventDefault(); q.focus(); }
+  if(e.key === 'Escape' && document.activeElement === q){ q.value=''; filter(); q.blur(); }
+});
+
+// touch devices have no slash key to advertise
+if(window.matchMedia('(hover:none)').matches) hint.style.display = 'none';
+</script>
+</body>
+</html>
