@@ -1,5 +1,5 @@
 {
-  "updated": "11 Aug 2026",
+  "updated": "21 Sep 2026",
   "categories": [
     { "name": "Software & Setup", "items": [
       {"g":"Engines","t":"Unity Hub","u":"https://unity.com/unity-hub"},
@@ -69,6 +69,7 @@
       {"g":"Color palettes","t":"Cinema Palette","u":"https://cinema-palette.web.app/"},
       {"g":"Color palettes","t":"Movie color barcodes","u":"https://screenmusings.org/color/movie-color-barcodes/"},
       {"g":"Shot composition","t":"Shot.Cafe — searchable film still database","u":"https://shot.cafe/"},
+      {"g":"Cinematography","t":"GDC — The cinematography of God of War","u":"https://www.youtube.com/watch?v=z0-ddTqz0XE"},
       {"g":"Character & model sheets","t":"Model sheets & production drawings","u":"https://livlily.blogspot.com/2010/11/model-sheets-production-drawings.html"},
       {"g":"Character & model sheets","t":"Reference Catalogue — hyper-detailed animation, 1988–1999","u":"https://profangrybeard.github.io/90sDGA/"}
     ]},
