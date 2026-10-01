@@ -1,5 +1,5 @@
 {
-  "updated": "21 Sep 2026",
+  "updated": "1 Oct 2026",
   "categories": [
     { "name": "Software & Setup", "items": [
       {"g":"Engines","t":"Unity Hub","u":"https://unity.com/unity-hub"},
@@ -83,7 +83,8 @@
     ]},
     { "name": "Game Design", "items": [
       {"t":"Eric Zimmerman — Secret history of The Metagame","u":"https://ericzimmerman.wordpress.com/2011/02/18/secret-history-of-the-metagame/"},
-      {"t":"The Metagame — the card game","u":"http://metaga.me/"}
+      {"t":"The Metagame — the card game","u":"http://metaga.me/"},
+      {"t":"GamesDesign.co.uk — balance math tools, guides & prototypes (TTK, drop rates, XP curves, economies)","u":"https://gamesdesign.co.uk/"}
     ]}
   ]
 }
