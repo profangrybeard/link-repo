@@ -1,5 +1,5 @@
 {
-  "updated": "1 Oct 2026",
+  "updated": "3 Oct 2026",
   "categories": [
     { "name": "Software & Setup", "items": [
       {"g":"Engines","t":"Unity Hub","u":"https://unity.com/unity-hub"},
@@ -43,7 +43,8 @@
       {"g":"Performance","t":"How to use Unity's memory profiling tools","u":"https://unity.com/how-to/use-memory-profiling-unity"},
       {"g":"Performance","t":"Ultimate guide to profiling Unity games","u":"https://unity.com/resources/ultimate-guide-to-profiling-unity-games"},
       {"g":"Tutorials","t":"Catlike Coding — Hex map, part 1","u":"https://catlikecoding.com/unity/tutorials/hex-map/part-1/"},
-      {"g":"Tutorials","t":"Unity 2023 Cookbook, fifth edition — source code","u":"https://github.com/PacktPublishing/Unity-2023-Cookbook-Fifth-Edition"}
+      {"g":"Tutorials","t":"Unity 2023 Cookbook, fifth edition — source code","u":"https://github.com/PacktPublishing/Unity-2023-Cookbook-Fifth-Edition"},
+      {"g":"Tutorials","t":"Stacey Haffner — Unity tutorials, programming tips & AI workflows (YouTube)","u":"https://www.youtube.com/@staceyhaffner"}
     ]},
     { "name": "Unreal", "items": [
       {"t":"Tom Looman — Unreal Engine tutorials & courses","u":"https://tomlooman.com/"},
