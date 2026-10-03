@@ -4,6 +4,10 @@
 
 **Students: that link above is what you want.** It opens the searchable page with every link in it. The files below just build that page, so you don't need to download or open anything here.
 
+<img src="qr.png" alt="QR code for profangrybeard.github.io/link-repo" width="320">
+
+Scan the QR code to open it on your phone, or grab the image to drop into a syllabus or slide.
+
 ---
 
 ## What this is
