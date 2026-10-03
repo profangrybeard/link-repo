@@ -183,6 +183,32 @@
     color:var(--dimmer);letter-spacing:.04em;
   }
 
+  /* ---- QR view: deliberately light so a phone screen reads as a clean code ---- */
+  #qr{
+    position:fixed;inset:0;z-index:50;display:none;
+    background:#fff;color:#101014;
+    padding:max(20px,env(safe-area-inset-top)) 20px max(20px,env(safe-area-inset-bottom));
+    flex-direction:column;align-items:center;justify-content:center;gap:18px;
+    text-align:center;
+  }
+  #qr.show{display:flex;}
+  #qr img{
+    width:min(78vw,78vh,520px);height:auto;display:block;
+    image-rendering:pixelated;
+  }
+  #qr .qt{
+    font-family:"Bricolage Grotesque",system-ui,sans-serif;
+    font-weight:700;font-size:clamp(26px,7vw,40px);letter-spacing:-.03em;line-height:1;
+    margin:0;
+  }
+  #qr .qu{font-family:"IBM Plex Mono",monospace;font-size:clamp(13px,3.6vw,16px);color:#555;word-break:break-all;}
+  #qr .qh{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#999;margin-top:8px;}
+  #qrClose{
+    position:absolute;top:max(14px,env(safe-area-inset-top));right:16px;
+    background:none;border:1px solid #ddd;border-radius:999px;cursor:pointer;
+    width:40px;height:40px;font-size:22px;line-height:1;color:#333;
+  }
+
   :focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px;}
   @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
 </style>
@@ -204,7 +230,11 @@
     </div>
     <div class="tools">
       <span id="status">Loading</span>
-      <button id="toggleAll" type="button">Expand all</button>
+      <span>
+        <button id="qrBtn" type="button" aria-controls="qr" aria-expanded="false">QR code</button>
+        &nbsp;&nbsp;
+        <button id="toggleAll" type="button">Expand all</button>
+      </span>
     </div>
   </div>
 
@@ -221,6 +251,14 @@
   </div>
 
   <footer>Link Repo &middot; static page &middot; no tracking</footer>
+</div>
+
+<div id="qr" role="dialog" aria-modal="true" aria-label="QR code for this page">
+  <button id="qrClose" type="button" aria-label="Close QR code">&times;</button>
+  <p class="qt">Prof. Angrybeard's<br>Link Repo</p>
+  <img src="qr-plain.png" alt="QR code linking to profangrybeard.github.io/link-repo" width="900" height="900">
+  <div class="qu">profangrybeard.github.io/link-repo</div>
+  <div class="qh">Tap anywhere to close</div>
 </div>
 
 <script>
@@ -360,7 +398,31 @@ toggleAll.addEventListener('click', () => {
   toggleAll.textContent = anyClosed ? 'Collapse all' : 'Expand all';
 });
 
+// QR view: a hallway handoff. Open it from the button, or land on #qr directly
+// so the view can be bookmarked to a phone home screen.
+const qr = document.getElementById('qr');
+const qrBtn = document.getElementById('qrBtn');
+const qrClose = document.getElementById('qrClose');
+
+function showQR(on){
+  qr.classList.toggle('show', on);
+  qrBtn.setAttribute('aria-expanded', on ? 'true' : 'false');
+  document.body.style.overflow = on ? 'hidden' : '';
+  if(on){ qrClose.focus(); }
+  else { qrBtn.focus(); }
+  const want = on ? '#qr' : location.pathname + location.search;
+  if(on && location.hash !== '#qr') history.pushState(null, '', want);
+  if(!on && location.hash === '#qr') history.replaceState(null, '', want);
+}
+
+qrBtn.addEventListener('click', () => showQR(true));
+qrClose.addEventListener('click', e => { e.stopPropagation(); showQR(false); });
+qr.addEventListener('click', () => showQR(false));
+window.addEventListener('popstate', () => showQR(location.hash === '#qr'));
+if(location.hash === '#qr') showQR(true);
+
 document.addEventListener('keydown', e => {
+  if(e.key === 'Escape' && qr.classList.contains('show')){ showQR(false); return; }
   if(e.key === '/' && document.activeElement !== q){ e.preventDefault(); q.focus(); }
   if(e.key === 'Escape' && document.activeElement === q){ q.value=''; filter(); q.blur(); }
 });

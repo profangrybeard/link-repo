@@ -33,6 +33,7 @@ A curated list of links for my game development courses: software downloads, eng
 - **Search:** type in the search box, or press <kbd>/</kbd> to jump to it. It matches link titles and web addresses, so a word like `unity3d` or `blender` narrows the list quickly.
 - **Browse:** click a category to open it, or use **Expand all** to see everything.
 - **Links open in a new tab**, so you won't lose your place.
+- **QR code:** tap **QR code** in the toolbar (or open [profangrybeard.github.io/link-repo/#qr](https://profangrybeard.github.io/link-repo/#qr)) to fill the screen with a scannable code. Handy for passing the page phone to phone.
 
 ## Found a broken link or have a suggestion?
 
