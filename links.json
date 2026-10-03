@@ -83,9 +83,10 @@
       {"t":"Scientific American — Bring science home: bouncing ball","u":"https://www.scientificamerican.com/article/bring-science-home-bouncing-ball/"}
     ]},
     { "name": "Game Design", "items": [
-      {"t":"Eric Zimmerman — Secret history of The Metagame","u":"https://ericzimmerman.wordpress.com/2011/02/18/secret-history-of-the-metagame/"},
-      {"t":"The Metagame — the card game","u":"http://metaga.me/"},
-      {"t":"GamesDesign.co.uk — balance math tools, guides & prototypes (TTK, drop rates, XP curves, economies)","u":"https://gamesdesign.co.uk/"}
+      {"g":"Systems & balance","t":"GamesDesign.co.uk — balance math tools, guides & prototypes (TTK, drop rates, XP curves, economies)","u":"https://gamesdesign.co.uk/"},
+      {"g":"Narrative & structure","t":"Game Developer — Story flowchart diagrams (start/exposition/choice nodes; challenge, player & random choices)","u":"https://www.gamedeveloper.com/design/story-flowchart-diagrams"},
+      {"g":"Metagame & theory","t":"Eric Zimmerman — Secret history of The Metagame","u":"https://ericzimmerman.wordpress.com/2011/02/18/secret-history-of-the-metagame/"},
+      {"g":"Metagame & theory","t":"The Metagame — the card game","u":"http://metaga.me/"}
     ]}
   ]
 }
