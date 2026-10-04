@@ -41,11 +41,13 @@ def main():
     with ThreadPoolExecutor(max_workers=8) as ex:
         results = list(ex.map(check, items))
 
-    broken, blocked, moved = [], [], []
+    broken, blocked, moved, flaky = [], [], [], []
     for item, status, final, err in results:
         line = f"- **{item['cat']}** · {item['t']}  \n  {item['u']}"
-        if err or (status and status >= 400 and status not in BLOCKED):
-            broken.append(f"{line}  \n  `{err or status}`")
+        if err:
+            flaky.append(f"{line}  \n  `{err}` (dropped or timed out; usually bot-blocking, open it by hand)")
+        elif status and status >= 400 and status not in BLOCKED:
+            broken.append(f"{line}  \n  `{status}`")
         elif status in BLOCKED:
             blocked.append(f"{line}  \n  `{status}` (refuses bots; open it by hand)")
         elif final:
@@ -56,12 +58,14 @@ def main():
         out += ["## Broken (fix these)\n", *broken, ""]
     if moved:
         out += ["## Redirected off-domain (check the new home)\n", *moved, ""]
+    if flaky:
+        out += ["## Could not reach (check by hand)\n", *flaky, ""]
     if blocked:
         out += ["## Blocked automated check (probably fine)\n", *blocked, ""]
-    if not (broken or moved or blocked):
+    if not (broken or moved or blocked or flaky):
         out.append("All links respond.")
     print("\n".join(out))
-    sys.exit(1 if broken or moved else 0)
+    sys.exit(1 if broken or moved or flaky else 0)
 
 if __name__ == "__main__":
     main()
