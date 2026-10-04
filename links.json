@@ -1,5 +1,5 @@
 {
-  "updated": "3 Oct 2026",
+  "updated": "4 Oct 2026",
   "categories": [
     { "name": "Software & Setup", "items": [
       {"g":"Engines","t":"Unity Hub","u":"https://unity.com/unity-hub"},
@@ -94,6 +94,7 @@
       {"t":"Scientific American — Bring science home: bouncing ball","u":"https://www.scientificamerican.com/article/bring-science-home-bouncing-ball/"}
     ]},
     { "name": "Game Design", "items": [
+      {"g":"Frameworks","t":"Hunicke, LeBlanc & Zubek — MDA: A formal approach to game design and game research (PDF)","u":"https://users.cs.northwestern.edu/~hunicke/MDA.pdf"},
       {"g":"Systems & balance","t":"GamesDesign.co.uk — balance math tools, guides & prototypes (TTK, drop rates, XP curves, economies)","u":"https://gamesdesign.co.uk/"},
       {"g":"Narrative & structure","t":"Game Developer — Story flowchart diagrams (start/exposition/choice nodes; challenge, player & random choices)","u":"https://www.gamedeveloper.com/design/story-flowchart-diagrams"},
       {"g":"Narrative & structure","t":"Sam Kabo Ashwell — Standard patterns in choice-based games (time cave, gauntlet, branch & bottleneck, quest…)","u":"https://heterogenoustasks.wordpress.com/2015/01/26/standard-patterns-in-choice-based-games/"},
