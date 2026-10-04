@@ -1,0 +1,49 @@
+name: Link check
+
+on:
+  schedule:
+    - cron: "17 13 1 * *"   # 1st of each month, 09:17 Eastern (13:17 UTC)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check every URL in links.json
+        id: check
+        run: |
+          set +e
+          python3 .github/scripts/check_links.py > report.md
+          echo "status=$?" >> "$GITHUB_OUTPUT"
+          cat report.md
+
+      - name: Open or update the report issue
+        if: steps.check.outputs.status != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE="Link check: broken or moved links"
+          BODY="$(cat report.md)
+
+          _Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}_"
+          N=$(gh issue list --state open --search "\"$TITLE\" in:title" --json number --jq '.[0].number')
+          if [ -n "$N" ]; then
+            gh issue comment "$N" --body "$BODY"
+          else
+            gh issue create --title "$TITLE" --body "$BODY" --label "link-rot" || gh issue create --title "$TITLE" --body "$BODY"
+          fi
+
+      - name: Close the report issue when everything is clean
+        if: steps.check.outputs.status == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE="Link check: broken or moved links"
+          N=$(gh issue list --state open --search "\"$TITLE\" in:title" --json number --jq '.[0].number')
+          [ -n "$N" ] && gh issue close "$N" --comment "All links respond as of this run." || true

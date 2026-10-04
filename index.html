@@ -3,9 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#101014">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#101014" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F4F2EE" media="(prefers-color-scheme: light)">
 <title>Link Repo</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Link Repo">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -21,6 +27,23 @@
     --gold:#D4A548;
     --focus:#7FA8C9;
     --pad:clamp(16px, 4vw, 28px);
+    --open-h:#fff;
+    --bar-fade:rgba(16,16,20,0);
+  }
+  @media (prefers-color-scheme: light){
+    :root{
+      --ink:#F4F2EE;
+      --panel:#FFFFFF;
+      --panel-lift:#E9E6E0;
+      --rule:#D6D2CA;
+      --text:#1C1B22;
+      --dim:#5E5B68;
+      --dimmer:#8A8796;
+      --gold:#8C6A1E;
+      --focus:#2F6B99;
+      --open-h:#000;
+      --bar-fade:rgba(244,242,238,0);
+    }
   }
   *{box-sizing:border-box;}
   #q::-webkit-search-cancel-button{-webkit-appearance:none;display:none;}
@@ -61,7 +84,7 @@
   /* ---- search ---- */
   .bar{
     position:sticky;top:0;z-index:20;
-    background:linear-gradient(var(--ink) 78%, rgba(16,16,20,0));
+    background:linear-gradient(var(--ink) 78%, var(--bar-fade));
     padding:10px 0 16px;
   }
   .field{
@@ -102,6 +125,7 @@
     color:var(--dimmer);letter-spacing:.04em;
   }
   .tools > span:last-child{flex:none;white-space:nowrap;}
+  #status{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .tools button{
     background:none;border:0;cursor:pointer;padding:4px 0;
     font:inherit;color:var(--dim);
@@ -137,7 +161,7 @@
     color:var(--dimmer);transition:transform .18s ease;
   }
   .cat.open .chev{transform:rotate(90deg);}
-  .cat.open .head h2{color:#fff;}
+  .cat.open .head h2{color:var(--open-h);}
 
   /* the spine replaces the old icon block: it marks containment rather than
      decorating, and keeps the open state legible when several are expanded */
@@ -526,6 +550,11 @@ document.addEventListener('keydown', e => {
 
 // touch devices have no slash key to advertise
 if(touch) hint.style.display = 'none';
+
+// offline + home-screen install. Network first, so this never serves a stale page while online.
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+}
 
 fetch('links.json', {cache:'no-cache'})
   .then(r => { if(!r.ok) throw new Error(r.status); return r.json(); })
