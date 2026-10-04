@@ -96,11 +96,12 @@
     color:var(--dim);font-size:18px;line-height:1;padding:6px;
   }
   .tools{
-    display:flex;justify-content:space-between;align-items:baseline;
+    display:flex;justify-content:space-between;align-items:baseline;gap:16px;
     margin-top:10px;
     font-family:"IBM Plex Mono",monospace;font-size:11.5px;
     color:var(--dimmer);letter-spacing:.04em;
   }
+  .tools > span:last-child{flex:none;white-space:nowrap;}
   .tools button{
     background:none;border:0;cursor:pointer;padding:4px 0;
     font:inherit;color:var(--dim);
@@ -169,6 +170,13 @@
     font-family:"IBM Plex Mono",monospace;
     font-size:11px;color:var(--dimmer);margin-top:3px;
   }
+
+  .lnk .new{
+    display:inline-block;vertical-align:2px;margin-left:8px;
+    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--focus);border:1px solid var(--focus);border-radius:3px;padding:0 5px;line-height:1.5;
+  }
+  .cat{scroll-margin-top:92px;}
 
   .note{
     display:none;padding:56px 0;text-align:center;
@@ -262,7 +270,9 @@
 </div>
 
 <script>
-/* The list itself lives in links.json — edit that file, not this one. */
+/* The list itself lives in links.json — edit that file, not this one.
+   Entry points: #<category-slug> opens that category, ?q=<term> prefills search,
+   #qr shows the hallway QR. Open categories persist per device in localStorage. */
 
 const list = document.getElementById('list');
 const q = document.getElementById('q');
@@ -272,22 +282,50 @@ const empty = document.getElementById('empty');
 const failed = document.getElementById('failed');
 const statusEl = document.getElementById('status');
 const toggleAll = document.getElementById('toggleAll');
+const touch = window.matchMedia('(hover:none)').matches;
+const STORE = 'lr.open';
+const NEW_DAYS = 30;
 
 let sections = [];
 let total = 0;
+let newCount = 0;
+let preSearch = null;   // open state before a search began, restored on clear
 
 function domain(u){
   try{ return new URL(u).hostname.replace(/^www\./,''); }catch(e){ return ''; }
+}
+function slug(name){
+  return name.toLowerCase().replace(/&/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+}
+function isNew(d){
+  if(!d) return false;
+  const t = Date.parse(d);
+  return !isNaN(t) && (Date.now() - t) < NEW_DAYS * 86400000;
+}
+
+function loadOpen(){
+  try{ return JSON.parse(localStorage.getItem(STORE)) || []; }catch(e){ return []; }
+}
+function saveOpen(){
+  try{ localStorage.setItem(STORE, JSON.stringify(sections.filter(s => s.classList.contains('open')).map(s => s.id))); }catch(e){}
+}
+function setOpen(sec, on){
+  sec.classList.toggle('open', on);
+  sec.querySelector('.head').setAttribute('aria-expanded', on ? 'true' : 'false');
+}
+function syncToggleLabel(){
+  toggleAll.textContent = sections.every(s => s.classList.contains('open')) ? 'Collapse all' : 'Expand all';
 }
 
 function build(data){
   const cats = data.categories || [];
 
-  cats.forEach((cat, ci) => {
+  cats.forEach(cat => {
     total += cat.items.length;
 
     const sec = document.createElement('section');
     sec.className = 'cat';
+    sec.id = slug(cat.name);
 
     const head = document.createElement('button');
     head.className = 'head';
@@ -301,7 +339,7 @@ function build(data){
 
     const body = document.createElement('div');
     body.className = 'body';
-    body.id = 'b' + ci;
+    body.id = 'b-' + sec.id;
     head.setAttribute('aria-controls', body.id);
 
     let lastGroup = null;
@@ -321,13 +359,20 @@ function build(data){
       const t = document.createElement('span'); t.className = 't'; t.textContent = it.t;
       const d = document.createElement('span'); d.className = 'd'; d.textContent = domain(it.u);
       a.append(t, d);
-      a.dataset.hay = (it.t + ' ' + (it.g||'') + ' ' + cat.name + ' ' + it.u).toLowerCase();
+      let hay = it.t + ' ' + (it.g||'') + ' ' + cat.name + ' ' + it.u;
+      if(isNew(it.a)){
+        const tag = document.createElement('span'); tag.className = 'new'; tag.textContent = 'new';
+        t.appendChild(tag);
+        hay += ' #new';
+        newCount++;
+      }
+      a.dataset.hay = hay.toLowerCase();
       body.appendChild(a);
     });
 
     head.addEventListener('click', () => {
-      const open = sec.classList.toggle('open');
-      head.setAttribute('aria-expanded', open ? 'true' : 'false');
+      setOpen(sec, !sec.classList.contains('open'));
+      if(!q.value.trim()){ saveOpen(); syncToggleLabel(); }
     });
 
     sec.append(head, body);
@@ -338,20 +383,42 @@ function build(data){
   document.getElementById('total').textContent = total;
   document.getElementById('cats').textContent = cats.length;
   document.getElementById('stamp').textContent = data.updated || '—';
+
+  if(newCount){
+    const b = document.createElement('button');
+    b.type = 'button'; b.id = 'newBtn';
+    b.textContent = newCount + ' new';
+    b.addEventListener('click', () => { q.value = '#new'; filter(); q.focus(); });
+    toggleAll.parentNode.insertBefore(b, toggleAll.parentNode.firstChild);
+    toggleAll.parentNode.insertBefore(document.createTextNode('  '), toggleAll);
+  }
+
+  // restore per-device open state, then let the URL override
+  const remembered = loadOpen();
+  sections.forEach(s => setOpen(s, remembered.includes(s.id)));
+  applyLocation(true);
+  syncToggleLabel();
+  if(!q.value.trim()) idleStatus();
+}
+
+function idleStatus(){
   statusEl.textContent = 'Tap a category to open it';
 }
 
 function filter(){
   const term = q.value.trim().toLowerCase();
+  const terms = term.split(/\s+/).filter(Boolean);
   clear.style.display = term ? 'block' : 'none';
-  hint.style.display = term ? 'none' : 'block';
-  let shown = 0;
+  hint.style.display = (term || touch) ? 'none' : 'block';
 
+  if(term && preSearch === null) preSearch = sections.map(s => s.classList.contains('open'));
+
+  let shown = 0;
   sections.forEach(sec => {
     const links = [...sec.querySelectorAll('.lnk')];
     let hits = 0;
     links.forEach(a => {
-      const match = !term || a.dataset.hay.includes(term);
+      const match = terms.every(t => a.dataset.hay.includes(t));
       a.hidden = !match;
       if(match) hits++;
     });
@@ -371,31 +438,43 @@ function filter(){
     if(currentLabel) labels.push([currentLabel, labelHasHit]);
     labels.forEach(([el, keep]) => { el.hidden = !keep; });
 
-    sec.hidden = term && hits === 0;
-    if(term){
-      sec.classList.toggle('open', hits > 0);
-      sec.querySelector('.head').setAttribute('aria-expanded', hits > 0 ? 'true':'false');
-    }
+    sec.hidden = !!term && hits === 0;
+    if(term) setOpen(sec, hits > 0);
     sec.querySelector('.n').textContent = term ? hits : links.length;
     shown += hits;
   });
 
+  if(!term && preSearch !== null){
+    sections.forEach((s, i) => setOpen(s, preSearch[i]));
+    preSearch = null;
+    syncToggleLabel();
+  }
+
   empty.style.display = (term && shown === 0) ? 'block' : 'none';
   statusEl.textContent = term
-    ? shown + ' of ' + total + ' links'
-    : 'Tap a category to open it';
+    ? shown + ' of ' + total + ' links' + (shown && !touch ? ' · Enter opens the first' : '')
+    : '';
+  if(!term) idleStatus();
+
+  // keep the search in the address bar so it can be bookmarked or pasted to a teammate
+  const url = location.pathname + (term ? '?q=' + encodeURIComponent(q.value.trim()) : '');
+  if(location.pathname + location.search !== url) history.replaceState(null, '', url);
+}
+
+function openFirst(){
+  const a = sections.map(s => s.hidden ? null : s.querySelector('.lnk:not([hidden])')).find(Boolean);
+  if(a) a.click();
 }
 
 q.addEventListener('input', filter);
+q.addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); openFirst(); } });
 clear.addEventListener('click', () => { q.value=''; filter(); q.focus(); });
 
 toggleAll.addEventListener('click', () => {
   const anyClosed = sections.some(s => !s.classList.contains('open'));
-  sections.forEach(s => {
-    s.classList.toggle('open', anyClosed);
-    s.querySelector('.head').setAttribute('aria-expanded', anyClosed ? 'true':'false');
-  });
-  toggleAll.textContent = anyClosed ? 'Collapse all' : 'Expand all';
+  sections.forEach(s => setOpen(s, anyClosed));
+  if(!q.value.trim()) saveOpen();
+  syncToggleLabel();
 });
 
 // QR view: a hallway handoff. Open it from the button, or land on #qr directly
@@ -415,11 +494,29 @@ function showQR(on){
   if(!on && location.hash === '#qr') history.replaceState(null, '', want);
 }
 
+// #qr, #<category>, ?q=<term>
+function applyLocation(initial){
+  const hash = location.hash.replace(/^#/, '');
+  if(hash === 'qr'){ showQR(true); return; }
+  showQR(false);
+  if(initial){
+    const term = new URLSearchParams(location.search).get('q');
+    if(term){ q.value = term; filter(); }
+  }
+  const sec = hash && document.getElementById(hash);
+  if(sec && sec.classList.contains('cat')){
+    setOpen(sec, true);
+    if(!q.value.trim()) saveOpen();
+    syncToggleLabel();
+    sec.scrollIntoView({block:'start'});
+  }
+}
+
 qrBtn.addEventListener('click', () => showQR(true));
 qrClose.addEventListener('click', e => { e.stopPropagation(); showQR(false); });
 qr.addEventListener('click', () => showQR(false));
-window.addEventListener('popstate', () => showQR(location.hash === '#qr'));
-if(location.hash === '#qr') showQR(true);
+window.addEventListener('popstate', () => applyLocation(false));
+window.addEventListener('hashchange', () => applyLocation(false));
 
 document.addEventListener('keydown', e => {
   if(e.key === 'Escape' && qr.classList.contains('show')){ showQR(false); return; }
@@ -428,7 +525,7 @@ document.addEventListener('keydown', e => {
 });
 
 // touch devices have no slash key to advertise
-if(window.matchMedia('(hover:none)').matches) hint.style.display = 'none';
+if(touch) hint.style.display = 'none';
 
 fetch('links.json', {cache:'no-cache'})
   .then(r => { if(!r.ok) throw new Error(r.status); return r.json(); })
