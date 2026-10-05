@@ -48,8 +48,16 @@
     ]},
     { "name": "Unreal", "items": [
       {"t":"Tom Looman — Unreal Engine tutorials & courses","u":"https://tomlooman.com/"},
-      {"t":"Cedric Neukirchen — Unreal Engine documentation","u":"https://cedric-neukirchen.net/docs/intro"},
-      {"t":"Cedric Neukirchen — Gameplay Framework + Network (which classes live on server, clients, or owning client)","u":"https://cedric-neukirchen.net/docs/multiplayer-compendium/framework-and-network"}
+      {"t":"Cedric Neukirchen — Unreal Engine documentation","u":"https://cedric-neukirchen.net/docs/intro"}
+    ]},
+    { "name": "Multiplayer & Networking", "items": [
+      {"g":"Concepts","t":"Gabriel Gambetta — Fast-Paced Multiplayer, part I: client-server architecture (4-part series with live demo)","a":"2026-10-05","u":"https://www.gabrielgambetta.com/client-server-game-architecture.html"},
+      {"g":"Concepts","t":"Valve — Source Multiplayer Networking (tickrate, interpolation, lag compensation)","a":"2026-10-05","u":"https://developer.valvesoftware.com/wiki/Source_Multiplayer_Networking"},
+      {"g":"Concepts","t":"Glenn Fiedler — Gaffer On Games (UDP, snapshots, state sync)","a":"2026-10-05","u":"https://gafferongames.com/"},
+      {"g":"Concepts","t":"Bettner & Terrano — 1500 Archers on a 28.8: deterministic lockstep in Age of Empires","a":"2026-10-05","u":"https://www.gamedeveloper.com/programming/1500-archers-on-a-28-8-network-programming-in-age-of-empires-and-beyond"},
+      {"g":"Unreal","t":"Epic — Networking Overview for Unreal Engine (official docs)","a":"2026-10-05","u":"https://dev.epicgames.com/documentation/en-us/unreal-engine/networking-overview-for-unreal-engine"},
+      {"g":"Unreal","t":"Cedric Neukirchen — Gameplay Framework + Network (which classes live on server, clients, or owning client)","a":"2026-10-05","u":"https://cedric-neukirchen.net/docs/multiplayer-compendium/framework-and-network"},
+      {"g":"Unity","t":"Unity — About Netcode for GameObjects (official docs)","a":"2026-10-05","u":"https://docs-multiplayer.unity3d.com/netcode/current/about/index.html"}
     ]},
     { "name": "Blender", "items": [
       {"t":"Blender Manual (latest)","u":"https://docs.blender.org/manual/en/latest/"},
