@@ -1,5 +1,5 @@
 {
-  "updated": "4 Oct 2026",
+  "updated": "5 Oct 2026",
   "categories": [
     { "name": "Software & Setup", "items": [
       {"g":"Engines","t":"Unity Hub","u":"https://unity.com/unity-hub"},
@@ -48,7 +48,8 @@
     ]},
     { "name": "Unreal", "items": [
       {"t":"Tom Looman — Unreal Engine tutorials & courses","u":"https://tomlooman.com/"},
-      {"t":"Cedric Neukirchen — Unreal Engine documentation","u":"https://cedric-neukirchen.net/docs/intro"}
+      {"t":"Cedric Neukirchen — Unreal Engine documentation","u":"https://cedric-neukirchen.net/docs/intro"},
+      {"t":"Cedric Neukirchen — Gameplay Framework + Network (which classes live on server, clients, or owning client)","u":"https://cedric-neukirchen.net/docs/multiplayer-compendium/framework-and-network"}
     ]},
     { "name": "Blender", "items": [
       {"t":"Blender Manual (latest)","u":"https://docs.blender.org/manual/en/latest/"},
