@@ -1,0 +1,1803 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Where the last mile breaks inside Atlanta's Perimeter: documented blockages in walking, rolling and transit, with sources. Compiled for GENERATE 2026.">
+<title>Atlanta Occlusion Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Public+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+.leaflet-pane,
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-tile-container,
+.leaflet-pane > svg,
+.leaflet-pane > canvas,
+.leaflet-zoom-box,
+.leaflet-image-layer,
+.leaflet-layer {
+	position: absolute;
+	left: 0;
+	top: 0;
+	}
+.leaflet-container {
+	overflow: hidden;
+	}
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+	        user-select: none;
+	  -webkit-user-drag: none;
+	}
+.leaflet-tile::selection {
+	background: transparent;
+}
+.leaflet-safari .leaflet-tile {
+	image-rendering: -webkit-optimize-contrast;
+	}
+.leaflet-safari .leaflet-tile-container {
+	width: 1600px;
+	height: 1600px;
+	-webkit-transform-origin: 0 0;
+	}
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+	display: block;
+	}
+.leaflet-container .leaflet-overlay-pane svg {
+	max-width: none !important;
+	max-height: none !important;
+	}
+.leaflet-container .leaflet-marker-pane img,
+.leaflet-container .leaflet-shadow-pane img,
+.leaflet-container .leaflet-tile-pane img,
+.leaflet-container img.leaflet-image-layer,
+.leaflet-container .leaflet-tile {
+	max-width: none !important;
+	max-height: none !important;
+	width: auto;
+	padding: 0;
+	}
+.leaflet-container img.leaflet-tile {
+	mix-blend-mode: plus-lighter;
+}
+.leaflet-container.leaflet-touch-zoom {
+	-ms-touch-action: pan-x pan-y;
+	touch-action: pan-x pan-y;
+	}
+.leaflet-container.leaflet-touch-drag {
+	-ms-touch-action: pinch-zoom;
+	touch-action: none;
+	touch-action: pinch-zoom;
+}
+.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom {
+	-ms-touch-action: none;
+	touch-action: none;
+}
+.leaflet-container {
+	-webkit-tap-highlight-color: transparent;
+}
+.leaflet-container a {
+	-webkit-tap-highlight-color: rgba(51, 181, 229, 0.4);
+}
+.leaflet-tile {
+	filter: inherit;
+	visibility: hidden;
+	}
+.leaflet-tile-loaded {
+	visibility: inherit;
+	}
+.leaflet-zoom-box {
+	width: 0;
+	height: 0;
+	-moz-box-sizing: border-box;
+	     box-sizing: border-box;
+	z-index: 800;
+	}
+.leaflet-overlay-pane svg {
+	-moz-user-select: none;
+	}
+.leaflet-pane         { z-index: 400; }
+.leaflet-tile-pane    { z-index: 200; }
+.leaflet-overlay-pane { z-index: 400; }
+.leaflet-shadow-pane  { z-index: 500; }
+.leaflet-marker-pane  { z-index: 600; }
+.leaflet-tooltip-pane   { z-index: 650; }
+.leaflet-popup-pane   { z-index: 700; }
+.leaflet-map-pane canvas { z-index: 100; }
+.leaflet-map-pane svg    { z-index: 200; }
+.leaflet-vml-shape {
+	width: 1px;
+	height: 1px;
+	}
+.lvml {
+	behavior: url(#default#VML);
+	display: inline-block;
+	position: absolute;
+	}
+.leaflet-control {
+	position: relative;
+	z-index: 800;
+	pointer-events: visiblePainted; 
+	pointer-events: auto;
+	}
+.leaflet-top,
+.leaflet-bottom {
+	position: absolute;
+	z-index: 1000;
+	pointer-events: none;
+	}
+.leaflet-top {
+	top: 0;
+	}
+.leaflet-right {
+	right: 0;
+	}
+.leaflet-bottom {
+	bottom: 0;
+	}
+.leaflet-left {
+	left: 0;
+	}
+.leaflet-control {
+	float: left;
+	clear: both;
+	}
+.leaflet-right .leaflet-control {
+	float: right;
+	}
+.leaflet-top .leaflet-control {
+	margin-top: 10px;
+	}
+.leaflet-bottom .leaflet-control {
+	margin-bottom: 10px;
+	}
+.leaflet-left .leaflet-control {
+	margin-left: 10px;
+	}
+.leaflet-right .leaflet-control {
+	margin-right: 10px;
+	}
+.leaflet-fade-anim .leaflet-popup {
+	opacity: 0;
+	-webkit-transition: opacity 0.2s linear;
+	   -moz-transition: opacity 0.2s linear;
+	        transition: opacity 0.2s linear;
+	}
+.leaflet-fade-anim .leaflet-map-pane .leaflet-popup {
+	opacity: 1;
+	}
+.leaflet-zoom-animated {
+	-webkit-transform-origin: 0 0;
+	    -ms-transform-origin: 0 0;
+	        transform-origin: 0 0;
+	}
+svg.leaflet-zoom-animated {
+	will-change: transform;
+}
+.leaflet-zoom-anim .leaflet-zoom-animated {
+	-webkit-transition: -webkit-transform 0.25s cubic-bezier(0,0,0.25,1);
+	   -moz-transition:    -moz-transform 0.25s cubic-bezier(0,0,0.25,1);
+	        transition:         transform 0.25s cubic-bezier(0,0,0.25,1);
+	}
+.leaflet-zoom-anim .leaflet-tile,
+.leaflet-pan-anim .leaflet-tile {
+	-webkit-transition: none;
+	   -moz-transition: none;
+	        transition: none;
+	}
+.leaflet-zoom-anim .leaflet-zoom-hide {
+	visibility: hidden;
+	}
+.leaflet-interactive {
+	cursor: pointer;
+	}
+.leaflet-grab {
+	cursor: -webkit-grab;
+	cursor:    -moz-grab;
+	cursor:         grab;
+	}
+.leaflet-crosshair,
+.leaflet-crosshair .leaflet-interactive {
+	cursor: crosshair;
+	}
+.leaflet-popup-pane,
+.leaflet-control {
+	cursor: auto;
+	}
+.leaflet-dragging .leaflet-grab,
+.leaflet-dragging .leaflet-grab .leaflet-interactive,
+.leaflet-dragging .leaflet-marker-draggable {
+	cursor: move;
+	cursor: -webkit-grabbing;
+	cursor:    -moz-grabbing;
+	cursor:         grabbing;
+	}
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-image-layer,
+.leaflet-pane > svg path,
+.leaflet-tile-container {
+	pointer-events: none;
+	}
+.leaflet-marker-icon.leaflet-interactive,
+.leaflet-image-layer.leaflet-interactive,
+.leaflet-pane > svg path.leaflet-interactive,
+svg.leaflet-image-layer.leaflet-interactive path {
+	pointer-events: visiblePainted; 
+	pointer-events: auto;
+	}
+.leaflet-container {
+	background: #ddd;
+	outline-offset: 1px;
+	}
+.leaflet-container a {
+	color: #0078A8;
+	}
+.leaflet-zoom-box {
+	border: 2px dotted #38f;
+	background: rgba(255,255,255,0.5);
+	}
+.leaflet-container {
+	font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-size: 0.75rem;
+	line-height: 1.5;
+	}
+.leaflet-bar {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+	border-radius: 4px;
+	}
+.leaflet-bar a {
+	background-color: #fff;
+	border-bottom: 1px solid #ccc;
+	width: 26px;
+	height: 26px;
+	line-height: 26px;
+	display: block;
+	text-align: center;
+	text-decoration: none;
+	color: black;
+	}
+.leaflet-bar a,
+.leaflet-control-layers-toggle {
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	display: block;
+	}
+.leaflet-bar a:hover,
+.leaflet-bar a:focus {
+	background-color: #f4f4f4;
+	}
+.leaflet-bar a:first-child {
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	}
+.leaflet-bar a:last-child {
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-bottom: none;
+	}
+.leaflet-bar a.leaflet-disabled {
+	cursor: default;
+	background-color: #f4f4f4;
+	color: #bbb;
+	}
+.leaflet-touch .leaflet-bar a {
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	}
+.leaflet-touch .leaflet-bar a:first-child {
+	border-top-left-radius: 2px;
+	border-top-right-radius: 2px;
+	}
+.leaflet-touch .leaflet-bar a:last-child {
+	border-bottom-left-radius: 2px;
+	border-bottom-right-radius: 2px;
+	}
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+	font: bold 18px 'Lucida Console', Monaco, monospace;
+	text-indent: 1px;
+	}
+.leaflet-touch .leaflet-control-zoom-in, .leaflet-touch .leaflet-control-zoom-out  {
+	font-size: 22px;
+	}
+.leaflet-control-layers {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+	background: #fff;
+	border-radius: 5px;
+	}
+.leaflet-control-layers-toggle {
+	width: 36px;
+	height: 36px;
+	}
+.leaflet-retina .leaflet-control-layers-toggle {
+	background-size: 26px 26px;
+	}
+.leaflet-touch .leaflet-control-layers-toggle {
+	width: 44px;
+	height: 44px;
+	}
+.leaflet-control-layers .leaflet-control-layers-list,
+.leaflet-control-layers-expanded .leaflet-control-layers-toggle {
+	display: none;
+	}
+.leaflet-control-layers-expanded .leaflet-control-layers-list {
+	display: block;
+	position: relative;
+	}
+.leaflet-control-layers-expanded {
+	padding: 6px 10px 6px 6px;
+	color: #333;
+	background: #fff;
+	}
+.leaflet-control-layers-scrollbar {
+	overflow-y: scroll;
+	overflow-x: hidden;
+	padding-right: 5px;
+	}
+.leaflet-control-layers-selector {
+	margin-top: 2px;
+	position: relative;
+	top: 1px;
+	}
+.leaflet-control-layers label {
+	display: block;
+	font-size: 13px;
+	font-size: 1.08333em;
+	}
+.leaflet-control-layers-separator {
+	height: 0;
+	border-top: 1px solid #ddd;
+	margin: 5px -10px 5px -6px;
+	}
+.leaflet-default-icon-path { 
+	}
+.leaflet-container .leaflet-control-attribution {
+	background: #fff;
+	background: rgba(255, 255, 255, 0.8);
+	margin: 0;
+	}
+.leaflet-control-attribution,
+.leaflet-control-scale-line {
+	padding: 0 5px;
+	color: #333;
+	line-height: 1.4;
+	}
+.leaflet-control-attribution a {
+	text-decoration: none;
+	}
+.leaflet-control-attribution a:hover,
+.leaflet-control-attribution a:focus {
+	text-decoration: underline;
+	}
+.leaflet-attribution-flag {
+	display: inline !important;
+	vertical-align: baseline !important;
+	width: 1em;
+	height: 0.6669em;
+	}
+.leaflet-left .leaflet-control-scale {
+	margin-left: 5px;
+	}
+.leaflet-bottom .leaflet-control-scale {
+	margin-bottom: 5px;
+	}
+.leaflet-control-scale-line {
+	border: 2px solid #777;
+	border-top: none;
+	line-height: 1.1;
+	padding: 2px 5px 1px;
+	white-space: nowrap;
+	-moz-box-sizing: border-box;
+	     box-sizing: border-box;
+	background: rgba(255, 255, 255, 0.8);
+	text-shadow: 1px 1px #fff;
+	}
+.leaflet-control-scale-line:not(:first-child) {
+	border-top: 2px solid #777;
+	border-bottom: none;
+	margin-top: -2px;
+	}
+.leaflet-control-scale-line:not(:first-child):not(:last-child) {
+	border-bottom: 2px solid #777;
+	}
+.leaflet-touch .leaflet-control-attribution,
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+	box-shadow: none;
+	}
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+	border: 2px solid rgba(0,0,0,0.2);
+	background-clip: padding-box;
+	}
+.leaflet-popup {
+	position: absolute;
+	text-align: center;
+	margin-bottom: 20px;
+	}
+.leaflet-popup-content-wrapper {
+	padding: 1px;
+	text-align: left;
+	border-radius: 12px;
+	}
+.leaflet-popup-content {
+	margin: 13px 24px 13px 20px;
+	line-height: 1.3;
+	font-size: 13px;
+	font-size: 1.08333em;
+	min-height: 1px;
+	}
+.leaflet-popup-content p {
+	margin: 17px 0;
+	margin: 1.3em 0;
+	}
+.leaflet-popup-tip-container {
+	width: 40px;
+	height: 20px;
+	position: absolute;
+	left: 50%;
+	margin-top: -1px;
+	margin-left: -20px;
+	overflow: hidden;
+	pointer-events: none;
+	}
+.leaflet-popup-tip {
+	width: 17px;
+	height: 17px;
+	padding: 1px;
+	margin: -10px auto 0;
+	pointer-events: auto;
+	-webkit-transform: rotate(45deg);
+	   -moz-transform: rotate(45deg);
+	    -ms-transform: rotate(45deg);
+	        transform: rotate(45deg);
+	}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+	background: white;
+	color: #333;
+	box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+	}
+.leaflet-container a.leaflet-popup-close-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	border: none;
+	text-align: center;
+	width: 24px;
+	height: 24px;
+	font: 16px/24px Tahoma, Verdana, sans-serif;
+	color: #757575;
+	text-decoration: none;
+	background: transparent;
+	}
+.leaflet-container a.leaflet-popup-close-button:hover,
+.leaflet-container a.leaflet-popup-close-button:focus {
+	color: #585858;
+	}
+.leaflet-popup-scrolled {
+	overflow: auto;
+	}
+.leaflet-oldie .leaflet-popup-content-wrapper {
+	-ms-zoom: 1;
+	}
+.leaflet-oldie .leaflet-popup-tip {
+	width: 24px;
+	margin: 0 auto;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)";
+	filter: progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678);
+	}
+.leaflet-oldie .leaflet-control-zoom,
+.leaflet-oldie .leaflet-control-layers,
+.leaflet-oldie .leaflet-popup-content-wrapper,
+.leaflet-oldie .leaflet-popup-tip {
+	border: 1px solid #999;
+	}
+.leaflet-div-icon {
+	background: #fff;
+	border: 1px solid #666;
+	}
+.leaflet-tooltip {
+	position: absolute;
+	padding: 6px;
+	background-color: #fff;
+	border: 1px solid #fff;
+	border-radius: 3px;
+	color: #222;
+	white-space: nowrap;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	pointer-events: none;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+	}
+.leaflet-tooltip.leaflet-interactive {
+	cursor: pointer;
+	pointer-events: auto;
+	}
+.leaflet-tooltip-top:before,
+.leaflet-tooltip-bottom:before,
+.leaflet-tooltip-left:before,
+.leaflet-tooltip-right:before {
+	position: absolute;
+	pointer-events: none;
+	border: 6px solid transparent;
+	background: transparent;
+	content: "";
+	}
+.leaflet-tooltip-bottom {
+	margin-top: 6px;
+}
+.leaflet-tooltip-top {
+	margin-top: -6px;
+}
+.leaflet-tooltip-bottom:before,
+.leaflet-tooltip-top:before {
+	left: 50%;
+	margin-left: -6px;
+	}
+.leaflet-tooltip-top:before {
+	bottom: 0;
+	margin-bottom: -12px;
+	border-top-color: #fff;
+	}
+.leaflet-tooltip-bottom:before {
+	top: 0;
+	margin-top: -12px;
+	margin-left: -6px;
+	border-bottom-color: #fff;
+	}
+.leaflet-tooltip-left {
+	margin-left: -6px;
+}
+.leaflet-tooltip-right {
+	margin-left: 6px;
+}
+.leaflet-tooltip-left:before,
+.leaflet-tooltip-right:before {
+	top: 50%;
+	margin-top: -6px;
+	}
+.leaflet-tooltip-left:before {
+	right: 0;
+	margin-right: -12px;
+	border-left-color: #fff;
+	}
+.leaflet-tooltip-right:before {
+	left: 0;
+	margin-left: -12px;
+	border-right-color: #fff;
+	}
+@media print {
+	.leaflet-control {
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+		}
+	}
+/* Layout: a map stage with a dossier rail, then evidence sections. Transit-signage vernacular shared with the GENERATE 2026 advisor kit; this page's route color is occlusion red. */
+:root{
+  --bg:#EEF0F1; --paper:#FFFFFF; --fg:#15191D; --mute:#5B646C; --rule:#CFD4D8; --soft:#E2E6E9; --map:#E6E9EB; --road:#FFFFFF; --roadcase:#C9CFD4; --water:#CFDFE8; --lbl:#7C868F;
+  --line:#C8102E;
+  --cx:#C8102E; --cp:#B5651D; --ct:#1F5FBF; --cv:#15191D; --ce:#6B3FA0;
+  --cx-ink:#fff; --cp-ink:#fff; --ct-ink:#fff; --cv-ink:#fff; --ce-ink:#fff;
+  --display:"Barlow Condensed","Arial Narrow",Impact,sans-serif;
+  --body:"Public Sans","Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15191D;--paper:#1E2429;--fg:#ECEFF1;--mute:#9AA4AD;--rule:#333C44;--soft:#262E35;--map:#1A2026;--road:#2C353D;--roadcase:#3B4650;--water:#1E2E3A;--lbl:#7F8A94;--line:#E63950;--cx:#E63950;--cp:#D9843A;--ct:#5B8DEB;--cv:#ECEFF1;--ce:#A07CD6;--cv-ink:#15191D;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#15191D;--paper:#1E2429;--fg:#ECEFF1;--mute:#9AA4AD;--rule:#333C44;--soft:#262E35;--map:#1A2026;--road:#2C353D;--roadcase:#3B4650;--water:#1E2E3A;--lbl:#7F8A94;--line:#E63950;--cx:#E63950;--cp:#D9843A;--ct:#5B8DEB;--cv:#ECEFF1;--ce:#A07CD6;--cv-ink:#15191D;color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.45;-webkit-text-size-adjust:100%}
+img{max-width:100%}
+[hidden]{display:none!important}
+a{color:inherit}
+.wrap{padding-inline:16px;max-width:1280px;margin-inline:auto}
+header.top{display:flex;gap:14px;align-items:stretch;padding-block:18px 12px;border-bottom:3px solid var(--line)}
+header.top .mark{width:14px;flex:0 0 14px;background:var(--line);border-radius:7px}
+.eyebrow{font-family:var(--display);text-transform:uppercase;letter-spacing:.08em;font-size:13px;color:var(--mute);font-weight:600}
+header.top h1{font-family:var(--display);font-weight:700;text-transform:uppercase;font-size:clamp(34px,5vw,56px);line-height:.95;margin:2px 0 0;letter-spacing:-.01em;text-wrap:balance}
+header.top .sub{color:var(--mute);font-size:15px;margin-top:8px;max-width:70ch}
+.intro{display:grid;grid-template-columns:1.4fr 1fr;gap:18px 28px;padding-block:16px 6px}
+.intro p{margin:0 0 10px;max-width:68ch}
+.intro .lead{font-size:18px}
+.howto{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:12px 14px;font-size:14px}
+.howto .kicker{margin-bottom:6px}
+.kicker{font-family:var(--display);text-transform:uppercase;letter-spacing:.08em;font-size:12px;color:var(--mute);font-weight:600}
+.mute{color:var(--mute)}
+small,.small{font-size:13px}
+h2{font-family:var(--display);text-transform:uppercase;font-size:24px;letter-spacing:.02em;margin:34px 0 10px;display:flex;align-items:center;gap:10px}
+h2::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--line);flex:0 0 10px}
+h3{font-family:var(--display);text-transform:uppercase;font-size:19px;letter-spacing:.02em;margin:0 0 6px;line-height:1.1}
+p{margin:0 0 10px}
+/* legend / filters */
+.controls{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;padding-block:10px 10px}
+.controls .grp{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.controls .lab{font-family:var(--display);text-transform:uppercase;letter-spacing:.08em;font-size:12px;color:var(--mute);font-weight:600;margin-right:2px}
+.chip{font:inherit;font-size:13px;font-weight:500;border:1px solid var(--rule);background:var(--paper);color:var(--fg);border-radius:999px;padding:5px 11px 5px 8px;display:inline-flex;align-items:center;gap:7px;cursor:pointer;line-height:1.1}
+.chip .dot{width:12px;height:12px;border-radius:50%;background:var(--c);flex:0 0 12px}
+.chip.cat[aria-pressed="false"]{opacity:.42}
+.chip.why{padding-left:11px}
+.chip.why[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip:focus-visible,button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--line);outline-offset:2px}
+.modebtn{font:inherit;font-size:13px;border:1px solid var(--rule);background:var(--paper);color:var(--fg);border-radius:6px;padding:5px 10px;cursor:pointer}
+.count{font-size:13px;color:var(--mute);margin-left:auto;font-variant-numeric:tabular-nums}
+/* stage */
+.stage{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(320px,440px);gap:0;border:1px solid var(--rule);border-radius:10px;overflow:hidden;background:var(--paper);height:min(78vh,780px);min-height:520px}
+#map{background:var(--map);height:100%;min-height:320px}
+.rail{border-left:1px solid var(--rule);overflow:auto;padding:16px 16px 20px;background:var(--paper)}
+@media (max-width:900px){
+  .intro{grid-template-columns:1fr}
+  .stage{grid-template-columns:1fr;height:auto;min-height:0}
+  #map{height:58vh;min-height:360px}
+  .rail{border-left:0;border-top:1px solid var(--rule);max-height:none}
+}
+/* dossier */
+.dos .cat{display:inline-flex;align-items:center;gap:7px;font-family:var(--display);text-transform:uppercase;letter-spacing:.08em;font-size:12px;font-weight:700;color:var(--c)}
+.dos .cat i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+.dos .num{font-family:var(--display);font-weight:700;font-size:13px;color:var(--mute);letter-spacing:.06em;margin-left:8px}
+.dos h3{font-size:24px;margin:6px 0 8px}
+.dos .h{font-size:16px;font-weight:500;margin:0 0 12px;border-left:4px solid var(--c);padding-left:10px}
+.dos .who{font-size:14px;margin:0 0 12px}
+.dos .who b,.dos .why b{font-family:var(--display);text-transform:uppercase;letter-spacing:.08em;font-size:12px;color:var(--mute);display:block;margin-bottom:2px}
+.dos ol.ev{list-style:none;padding:0;margin:0 0 12px}
+.dos ol.ev li{padding:8px 0;border-top:1px solid var(--rule);font-size:14px}
+.dos ol.ev li:last-child{border-bottom:1px solid var(--rule)}
+.srcs{display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:5px;align-items:center}
+.srcs a{font-size:12px;color:var(--mute);text-decoration:none;border:1px solid var(--rule);border-radius:4px;padding:1px 6px;line-height:1.5}
+.srcs a:hover{color:var(--fg);border-color:var(--fg)}
+.conf{font-size:11px;font-family:var(--display);text-transform:uppercase;letter-spacing:.06em;color:var(--mute);border:1px dashed var(--rule);border-radius:4px;padding:1px 6px}
+.dos .why{font-size:14px}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 6px}
+.tag{font-family:var(--display);text-transform:uppercase;letter-spacing:.06em;font-size:12px;font-weight:700;background:var(--soft);color:var(--fg);border-radius:4px;padding:2px 7px}
+.dos .nav{display:flex;gap:8px;margin-top:14px}
+.dos .nav button{font:inherit;font-size:13px;border:1px solid var(--rule);background:var(--paper);color:var(--fg);border-radius:6px;padding:6px 10px;cursor:pointer}
+.weight{font-size:12px;color:var(--mute)}
+/* map markers */
+.pin{display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--c);color:var(--ink,#fff);font-family:var(--display);font-weight:700;font-size:13px;box-shadow:0 0 0 2px var(--paper),0 1px 4px rgba(0,0,0,.35);cursor:pointer;line-height:1;letter-spacing:0;transition:transform .12s;transform:scale(var(--ps,1))}
+.pin.w2{font-size:14px}.pin.w3{font-size:15px}
+.pin:hover{transform:scale(calc(var(--ps,1)*1.12))}
+.pin.sel{box-shadow:0 0 0 3px var(--paper),0 0 0 6px var(--c),0 2px 6px rgba(0,0,0,.4);z-index:1000}
+.pin.dim{opacity:.18;pointer-events:none}
+.leaflet-marker-icon.pinwrap{background:transparent;border:0}
+.leaflet-div-icon.maplbl,.leaflet-div-icon.stlbl{background:transparent;border:0}
+.maplbl{font-family:var(--display);font-weight:600;font-size:11px;letter-spacing:.1em;color:var(--lbl);white-space:nowrap;pointer-events:none}
+.maplbl span{display:inline-block;transform:translate(-50%,-50%);text-shadow:0 0 3px var(--map),0 0 3px var(--map)}
+.maplbl.rd span{font-size:10px;color:var(--mute);background:var(--road);padding:0 4px;border-radius:3px;border:1px solid var(--roadcase);text-shadow:none}
+.stlbl{font-family:var(--body);font-size:10px;color:var(--lbl);white-space:nowrap;pointer-events:none}
+.stlbl span{display:inline-block;transform:translate(6px,-7px);text-shadow:0 0 3px var(--map),0 0 3px var(--map)}
+path.g-water{stroke:var(--water)}path.g-case{stroke:var(--roadcase)}path.g-road{stroke:var(--road)}path.g-stn{stroke:var(--fg);fill:var(--paper)}
+.leaflet-container{font-family:var(--body);background:var(--map)}
+.leaflet-control-attribution{background:var(--paper)!important;color:var(--mute)!important;font-size:10px!important}
+.leaflet-control-attribution a{color:var(--mute)!important}
+.leaflet-bar a{background:var(--paper)!important;color:var(--fg)!important;border-bottom-color:var(--rule)!important}
+.leaflet-bar{border:1px solid var(--rule)!important;box-shadow:none!important}
+.mapnote{position:absolute;left:10px;bottom:22px;z-index:800;font-size:11px;color:var(--mute);background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:3px 7px;max-width:70%}
+.leaflet-tile-pane{filter:saturate(.35) contrast(.98)}
+@media (prefers-reduced-motion:reduce){.pin{transition:none}}
+/* index */
+.index{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px}
+.row{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:start;background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:10px 12px;cursor:pointer;text-align:left;font:inherit;color:inherit}
+.row:hover{border-color:var(--fg)}
+.row.sel{outline:2px solid var(--c);outline-offset:-2px}
+.row .n{width:26px;height:26px;border-radius:50%;background:var(--c);color:var(--ink,#fff);font-family:var(--display);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.row .t{display:block;font-family:var(--display);text-transform:uppercase;font-size:16px;line-height:1.05;letter-spacing:.01em}
+.row .d{display:block;font-size:13px;color:var(--mute);margin-top:4px}
+.row.hide{display:none}
+/* patterns */
+.patterns{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px}
+.pat{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:14px}
+.pat ul{padding-left:18px;margin:6px 0 8px}
+.pat li{margin:0 0 6px;font-size:14px}
+.pat .sites{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.sref{font:inherit;font-family:var(--display);font-weight:700;font-size:12px;width:24px;height:24px;border-radius:50%;border:0;background:var(--c);color:var(--ink,#fff);cursor:pointer;padding:0}
+.sref:hover{transform:scale(1.1)}
+/* numbers */
+.numbers{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.tile{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:12px 12px 10px;display:flex;flex-direction:column;gap:4px;min-height:118px}
+.tile .v{font-family:var(--display);font-weight:700;font-size:38px;line-height:.95;letter-spacing:-.01em;font-variant-numeric:tabular-nums;color:var(--line)}
+.tile .l{font-size:13px;line-height:1.3}
+.tile .s{margin-top:auto;font-size:11px;color:var(--mute)}
+.tile .s a{color:var(--mute)}
+/* why */
+.whys{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.whyc{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:12px}
+.whyc .d{font-size:14px;color:var(--mute);margin:2px 0 8px}
+/* timeline */
+.tl{list-style:none;padding:0;margin:0;border-top:1px solid var(--rule)}
+.tl li{display:grid;grid-template-columns:62px 1fr;gap:12px;padding:8px 0;border-bottom:1px solid var(--rule);font-size:14px;align-items:start}
+.tl .y{font-family:var(--display);font-weight:700;font-size:18px;line-height:1.1;font-variant-numeric:tabular-nums}
+.tl .sites{display:inline-flex;gap:4px;margin-left:6px;vertical-align:middle}
+.tl .sref{width:20px;height:20px;font-size:11px}
+/* gaps + sources */
+.gaps{padding-left:20px;margin:0}
+.gaps li{margin:0 0 6px;font-size:14px}
+.sources{columns:2;column-gap:28px;font-size:13px;padding-left:18px;margin:0}
+.sources li{break-inside:avoid;margin:0 0 5px}
+.sources a{color:var(--fg);text-decoration-color:var(--rule)}
+.sources .refs{color:var(--mute)}
+@media (max-width:700px){.sources{columns:1}}
+footer{margin:36px 0 30px;padding-top:14px;border-top:1px solid var(--rule);font-size:13px;color:var(--mute)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="mark" aria-hidden="true"></div>
+  <div>
+    <div class="eyebrow">GENERATE 2026 · Research kit · Inside I-285 · Compiled Oct 9, 2026</div>
+    <h1>Atlanta Occlusion Map</h1>
+    <div class="sub">Where the last mile breaks inside the Perimeter. <span id="sitecount"></span> documented blockages in the city's walking, rolling and transit capillaries, with the evidence and the history of why each one is still there. No solutions on this page, by design.</div>
+  </div>
+</header>
+
+<div class="intro">
+  <div>
+    <p class="lead">If the city is a heart, the interstates and the rail lines are its big vessels and they get the attention. The trip from a bus stop to a front door, from a station to a hospital shift, from an apartment to a grocery store across seven lanes, runs through capillaries. That is where Atlanta's trips fail, and most of those failures are old enough to feel like weather.</p>
+    <p>This map holds the failures that can be documented: a death with a date, a plan with a year, a vote with a margin. Each site names who it hits and why it persists. The reasons sort into five kinds: the thing is so familiar nobody sees it, it was studied and shelved, an organized neighborhood beat the fix, the road belongs to a government that does not answer to the people walking on it, or the money went elsewhere.</p>
+  </div>
+  <div class="howto">
+    <div class="kicker">How to read it</div>
+    <p>Click a numbered site on the map or in the index. The dossier gives the blockage, who it hits, the evidence with a link and data year for every claim, and the reason it persists. Marker size is scale: one documented episode, a neighborhood, or a corridor or decades-long pattern. Filter by kind of blockage or by reason. Claims marked <span class="conf">medium</span> rest on a secondary source or older data.</p>
+    <p class="small mute" style="margin:0">Coordinates are placed at the nearest intersection or landmark. The schematic base is drawn by hand from known interchanges and station locations. Street tiles load where the page is allowed to reach the network.</p>
+  </div>
+</div>
+
+<div class="controls" role="group" aria-label="Map filters">
+  <div class="grp" id="catchips"><span class="lab">Blockage</span></div>
+  <div class="grp" id="whychips"><span class="lab">Reason</span></div>
+  <button class="modebtn" id="modebtn" type="button" aria-pressed="false">Base: streets</button>
+  <span class="count" id="count"></span>
+</div>
+
+<div class="stage">
+  <div id="map" role="region" aria-label="Map of documented last-mile blockages inside I-285"></div>
+  <aside class="rail" id="rail" aria-live="polite"></aside>
+</div>
+
+<h2 id="index">Index of sites</h2>
+<p class="mute small">Numbered by kind of blockage: 1 to 10 crossings, 11 to 16 paths, 17 to 26 transit, 27 to 37 severance, 38 to 43 exposure. Click a row to open it on the map.</p>
+<div class="index" id="indexlist"></div>
+
+<h2 id="patterns">Travel patterns the city has never addressed</h2>
+<p class="mute" style="max-width:72ch">Use cases live here. Each pattern is a trip that thousands of people make every day and that the system was not designed for. The facts are regional unless stated; the site numbers point to where the pattern becomes a place.</p>
+<div class="patterns" id="patternlist"></div>
+
+<h2 id="numbers">The numbers that frame it</h2>
+<div class="numbers" id="numberlist"></div>
+
+<h2 id="why">Why they persist</h2>
+<p class="mute" style="max-width:72ch">Five mechanisms. Most sites carry more than one. The counts are how many of the <span class="sitecount"></span> sites carry each tag.</p>
+<div class="whys" id="whylist"></div>
+
+<h2 id="timeline">Timeline, 1938 to 2026</h2>
+<ol class="tl" id="tl"></ol>
+
+<h2 id="gaps">What could not be found</h2>
+<p class="mute" style="max-width:72ch">Six research streams ran on Oct 9, 2026 with the rule that every number had to come from a page actually read. These are the numbers that do not exist in public, or could not be reached. Each is a finding: the city does not measure it, or does not publish it.</p>
+<ul class="gaps" id="gaplist"></ul>
+
+<h2 id="method">Method</h2>
+<p style="max-width:72ch">Scope is the area inside I-285: the City of Atlanta plus the inside-Perimeter parts of DeKalb and Fulton. Sites were chosen where a blockage could be tied to a documented death, count, study, ordinance, vote or demolition. Every claim links to its source and states the data year; where sources conflict, the conflict is stated. Claims marked medium rest on a secondary source, older data or a figure the primary document implies rather than states. Nothing here is a recommendation. The page exists to make need visible before anyone proposes anything.</p>
+
+<h2 id="sources">Sources</h2>
+<ol class="sources" id="sourcelist"></ol>
+
+<footer>Compiled for the GENERATE 2026 design sprint, SCAD Atlanta, Oct 9, 2026. Base map: schematic drawn from public interchange and station locations; street tiles by CARTO on OpenStreetMap data where available. Research assistance by Claude; every figure traced to the linked source.</footer>
+</div>
+
+<script>
+/* Atlanta Occlusion Map: data. Compiled Oct 9, 2026 for GENERATE 2026. Problems only. */
+const CAT = {
+  x: { n: "Crossing", d: "A state road or arterial that people cannot safely cross, with the deaths to show it." },
+  p: { n: "Path", d: "No sidewalk, a broken sidewalk, a missing ramp, a removed lane." },
+  t: { n: "Transit", d: "A stop, route, station or schedule that does not reach the trip." },
+  v: { n: "Severance", d: "A cut made on purpose: highway, wall, clearance, vote." },
+  e: { n: "Exposure", d: "Heat, water or air that makes the walk itself the hazard." }
+};
+const WHY = {
+  f: { n: "Familiarity", d: "It has looked this way so long that nobody sees it." },
+  r: { n: "Swept under the rug", d: "Studied, planned, promised, deferred." },
+  n: { n: "NIMBY politics", d: "An organized objection beat the fix." },
+  j: { n: "Jurisdiction", d: "The road belongs to someone who does not answer to the people walking on it." },
+  m: { n: "Money", d: "The budget went elsewhere or never existed." }
+};
+const SRC = {
+  usdot16: ["USDOT, Brookhaven case study, 2016", "https://www.transportation.gov/sites/dot.gov/files/docs/GA%20Brookhaven.pdf"],
+  pbs10: ["PBS Blueprint America, 2010", "https://www.pbs.org/wnet/blueprintamerica/video/video-dangerous-crossing/1053/"],
+  fox5_bufordHR24: ["Fox 5, Aug 2024", "https://fox5atlanta.com/news/man-killed-hit-and-run-driver-buford-highway-overnight-police-say"],
+  axios_buford23: ["Axios Atlanta, Feb 2023", "https://www.axios.com/local/atlanta/2023/02/03/buford-highway-pedestrian-safety-atlanta"],
+  brookhaven_gdot: ["City of Brookhaven, GDOT project page", "https://www.brookhavenga.gov/568/GDOT-Buford-Highway-Project"],
+  census_doraville: ["Census QuickFacts, ACS 2020 to 2024", "https://www.census.gov/quickfacts/fact/table/doravillecitygeorgia/PST045223"],
+  sb_la17: ["Streetsblog LA, 2017", "https://la.streetsblog.org/2017/09/22/the-campaign-to-fix-atlantas-most-dangerous-street-and-preserve-its-immigrant-cultures"],
+  arc_doraville23: ["ARC, Doraville SS4A presentation, 2023", "https://cdn.atlantaregional.org/wp-content/uploads/doraville-ss4a-presentation-3723.pdf"],
+  brookhaven_sap: ["Brookhaven Buford Hwy Safety Action Plan, 2025", "https://www.brookhavenga.gov/932/Buford-Highway-Safety-Action-Plan"],
+  fox5_ped23: ["Fox 5 on the Propel ATL report, 2023", "https://fox5atlanta.com/news/atlanta-pedestrian-deaths-propelatl-study-black-neighborhoods"],
+  fcrc_q2_24: ["ATLDOT Fatal Crash Review Committee, Q2 2024", "https://atldot.atlantaga.gov/wp-content/uploads/2025/11/2024Q2_FCRC_Combined-Report.pdf"],
+  fcrc_24: ["ATLDOT Fatal Crash Review Committee, 2024 combined", "https://atldot.atlantaga.gov/wp-content/uploads/2025/11/2024Q134_FCRC_Combined-Report.pdf"],
+  fcrc_annual: ["ATLDOT Fatal Crash Review Committee, 2024 annual and Q1 2025", "https://atldot.atlantaga.gov/wp-content/uploads/2025/11/2025_Q1__2024-Annual-Report_FCRC_Report.pdf"],
+  axios_moreland25: ["Axios Atlanta, July 2025", "https://www.axios.com/local/atlanta/2025/07/25/atlanta-moreland-avenue-highway"],
+  hood_moreland26: ["Hoodline, June 2026", "https://hoodline.com/2026/06/moreland-mess-keeps-pedestrians-dodging-traffic-as-beltline-link-crawls-ahead/"],
+  bridge_moreland: ["BridgeLookup, National Bridge Inventory record", "https://bridgelookup.com/bridge/97532"],
+  gdot_memorial22: ["GDOT Memorial Dr multimodal safety study, 2022", "https://www.dot.ga.gov/systems/ProjectDocuments/MemorialDriveCorridor/0019558_SR%20154%20Memorial%20Dr%20MOSD%20Multimodal%20Safety%20Traffic%20Engineering%20Study.pdf"],
+  wsb_memorial19: ["WSB-TV, 2019", "https://www.wsbtv.com/news/local/dekalb-county/reversible-lanes-will-be-removed-to-make-dangerous-busy-stretch-of-road-safer/926951505"],
+  axios_fatal25: ["Axios Atlanta, March 2025", "https://www.axios.com/local/atlanta/2025/03/06/atlanta-dekalb-clayton-fulton-traffic-fatalities"],
+  gdot_hollowell23: ["GDOT Hollowell road diet newsletter, 2023", "https://www.dot.ga.gov/systems/ProjectDocuments/Projects/0017926_DLHollowellRdDiet/0017926_Spring2023_Newsletter.pdf"],
+  wsb_hollowell23: ["WSB-TV, 2023", "https://www.wsbtv.com/news/local/atlanta/new-safety-measures-coming-one-atlantas-most-dangerous-corridors/HDYHEZUVKZDFJGSTHXNT34DNEI"],
+  wsb_ped22: ["WSB-TV, 2023", "https://www.wsbtv.com/news/local/nearly-40-pedestrians-died-atlanta-streets-2022-so-what-is-being-done/6YKDHDB5BFAZDH6LOJVWOVPY3E/"],
+  arc_q4_25: ["Propel ATL at the ARC Regional Safety Task Force, Dec 2025", "https://cdn.atlantaregional.org/wp-content/uploads/q4-rstf-presentations.pdf"],
+  anf_sood26: ["Atlanta News First, Feb 2026", "https://www.atlantanewsfirst.com/2026/02/14/family-pedestrian-killed-faded-crosswalk-files-lawsuit-against-city-atlanta"],
+  vz_plan: ["Atlanta Vision Zero Action Plan, 2023", "https://atldot.atlantaga.gov/wp-content/uploads/2025/09/ATLVisionZeroActionPlan.pdf"],
+  ahc_walls22: ["Atlanta History Center, 2022", "https://www.atlantahistorycenter.com/blog/atlanta-street-names-when-roads-become-walls/"],
+  saporta_campbellton22: ["Saporta Report, 2022", "https://saportareport.com/?p=1042602"],
+  cbs_london25: ["CBS Atlanta, 2025", "https://www.cbsnews.com/atlanta/news/atlanta-families-call-for-safer-streets-after-data-shows-traffic-deaths-outpace-homicides"],
+  wsb_dekalb25: ["WSB-TV, March 2025", "https://wsbtv.com/news/local/atlanta/study-metro-atlanta-traffic-looks-safety-fatal-crashes-contributing-factors/YVGIVEIXYJHBVBG67HVLSUL2OE"],
+  rd_powell24: ["Rough Draft Atlanta, May 2024", "https://roughdraftatlanta.com/2024/05/23/one-man-exonerated-one-awaiting-trial-in-brookhaven-hit-and-run/"],
+  anf_capview24: ["Atlanta News First, Oct 2024", "https://www.atlantanewsfirst.com/2024/10/25/neighbors-march-safer-sidewalks-southwest-atlanta/"],
+  atp_appx: ["ATLDOT, Atlanta's Transportation Plan technical appendix", "https://atlantaga.gov/home/showpublisheddocument/48093/637353603357070000"],
+  lawson_complaint: ["Lawson v. City of Atlanta, complaint, May 2018", "https://decaturlegal.com/wp-content/uploads/2018/05/CivilComplaint-Lawsonetalvs.CityofAtlanta.pdf"],
+  doj09: ["US Department of Justice, Dec 2009", "https://www.justice.gov/opa/pr/2009/December/09-crt-1314.html"],
+  ajc_ada23: ["AJC, July 2023", "https://www.ajc.com/news/atlanta-news/city-tees-up-16m-settlement-in-years-long-ada-lawsuit/AJSHU4HUQNHXDLLLMOZPOTSPAQ/"],
+  clearinghouse: ["Civil Rights Litigation Clearinghouse", "https://clearinghouse.net/case/45291/"],
+  anf_ada25: ["Atlanta News First, Dec 2025", "https://www.atlantanewsfirst.com/2025/12/24/atlanta-pushing-improve-ada-compliance-city-sidewalks-scores-54-out-100"],
+  ada_plan26: ["City of Atlanta draft ADA Transition Plan, 2026", "https://assets.nationbuilder.com/atlbike/pages/17678/attachments/original/1785432286/Draft_ADA_Transition_Plan_June.pdf"],
+  propel_sidewalk26: ["Propel ATL, July 2026", "https://www.letspropelatl.org/show-us-the-sidewalk-money-sally-flocks"],
+  ajc_sidewalk14: ["AJC opinion, 2014", "https://www.ajc.com/news/opinion/sidewalk-repair-policy-busted/73b1gY9rHKJAzY16BQ2hNK/"],
+  rd_sidewalk15: ["Rough Draft Atlanta, July 2015", "https://roughdraftatlanta.com/2015/07/23/property-owners-could-still-be-on-hook-for-sidewalk-repairs/"],
+  acc_ada26: ["Atlanta Civic Circle, March 2026", "https://civicatlanta.org/blog/2026-03-22-ada-committee-advances-sidewalk-recommendations"],
+  gt_sidewalk13: ["Georgia Tech, 2013", "https://drupaldev.ce.gatech.edu/node/6202"],
+  wabe_westview17: ["WABE, 2017", "https://www.wabe.org/atlanta-removes-bike-lane-and-raises-lot-questions/"],
+  atldot_cleve1: ["ATLDOT project page, Cleveland Ave sidewalk installation", "https://atldot.atlantaga.gov/projects/cleveland-ave-sidewalk-installation/"],
+  atldot_cleve2: ["ATLDOT project page, Cleveland Ave pedestrian mobility", "https://atldot.atlantaga.gov/projects/cleveland-avenue-pedestrian-mobility-improvements/"],
+  dekalb_glenwood: ["DeKalb County, Dec 2024", "https://www.dekalbcountyga.gov/node/1205072"],
+  dekalb_splost_dec25: ["DeKalb SPLOST committee slides, Dec 2025", "https://www.dekalbcountyga.gov/sites/default/files/2025-12/DEC%202%202025%20SPLOST%20COW%20SLIDES.pdf"],
+  dekalb_splost_status: ["DeKalb SPLOST I status snapshot, March 2025", "https://www.dekalbcountyga.gov/sites/default/files/users/user3566/SPLOST%20I%20Status%20Snapshot_03.05.2025%20(002).pdf"],
+  dekalb_2055: ["DeKalb 2055 comprehensive plan, resident story", "https://engagedekalb.dekalbcountyga.gov/2055-comp-plan/stories/unincorporated-south-dekalb-resident"],
+  walkscore: ["Walk Score, Atlanta, 2025", "https://www.walkscore.com/GA/Atlanta"],
+  brookhaven_petition: ["City of Brookhaven, sidewalk petition program", "https://www.brookhavenga.gov/572/Sidewalk-Petition-Program"],
+  wiki_clifton: ["Wikipedia, Clifton Corridor", "https://en.wikipedia.org/wiki/Clifton_Corridor"],
+  rd_moremarta18: ["Rough Draft Atlanta, Oct 2018", "https://roughdraftatlanta.com/2018/10/05/marta-board-approves-expansion-project-list/"],
+  rd_clifton23: ["Rough Draft Atlanta, Feb 2023", "https://roughdraftatlanta.com/2023/02/14/light-rail-is-out-bus-rapid-transit-is-in-for-martas-clifton-corridor-project/"],
+  ajc_clifton26: ["AJC, Feb 2026", "https://www.ajc.com/news/2026/02/armour-yards-endpoint-for-clifton-bus-rapid-transit-could-add-decade-to-project/"],
+  emory_marta00: ["Emory Report, Feb 2000", "https://news.emory.edu/emory-report-archive/erarchive/2000/February/erfebruary.14/2_14_00marta.html"],
+  dhca22: ["Druid Hills Civic Association, 2022", "https://druidhills.org/neighborhood-news/13224248"],
+  emory_nextgen: ["Emory Transportation, 2026", "https://transportation.emory.edu/article/marta-service-changes"],
+  atl_about: ["Hartsfield-Jackson, About ATL", "https://www.atl.com/about-atl/"],
+  marta_howto: ["MARTA, How to Ride", "https://www.itsmarta.com/how-to-ride.aspx"],
+  marta_sched: ["MARTA, train stations and schedules", "https://itsmarta.com/train-stations-and-schedules.aspx"],
+  nasem24: ["National Academies, 2024", "https://www.nationalacademies.org/read/27994/chapter/7"],
+  ajc_tsa26: ["AJC, March 2026", "https://www.ajc.com/news/2026/03/why-have-airport-lines-seemed-worse-at-atl-the-reasons-are-many/"],
+  anf_airport24: ["Atlanta News First, June 2024", "https://www.atlantanewsfirst.com/2024/06/21/transit-worker-shortage-causes-delays-with-marta-train-shuttles-hartsfield-jackson/"],
+  humantransit26: ["Human Transit (Jarrett Walker, the network's designer), May 2026", "https://humantransit.org/2026/05/atlanta-welcome-to-your-new-transit-network.html"],
+  marta_nextgen: ["MARTA, NextGen Bus Network launch, 2026", "https://itsmarta.com/marta-launches-nextgen-bus-network.aspx"],
+  marta_r23: ["MARTA, Route 23 profile, 2026", "https://itsmarta.com/uploadedfiles/NGBN-bus-routes/NGBN-Route-Profile-23.pdf"],
+  marta_otp: ["MARTA, bus on-time performance", "https://itsmarta.com/bsc_Bus_OTP.aspx"],
+  acc_otp26: ["Atlanta Civic Circle, Aug 2026", "https://civicatlanta.org/blog/2026-08-30-marta-reports-bus-on-time-drop-plans-new-safety-patrols"],
+  marta_alerts: ["MARTA, service alerts", "https://itsmarta.com/service-alerts.aspx"],
+  ajc_cancel26: ["AJC, April 2026", "https://images.ajc.com/news/2026/04/how-often-did-marta-cancel-your-bus-last-year/"],
+  wsb_berean26: ["WSB-TV, 2026", "https://www.wsbtv.com/news/local/we-are-basically-paralyzed-seniors-complain-half-mile-walk-after-bus-stop-closes/CKTBCIWZZVCCVAIRTIGD6NB4EY/"],
+  mt_nextgen25: ["Mass Transit, 2025", "https://www.masstransitmag.com/bus/infrastructure/press-release/55297269/metropolitan-atlanta-rapid-transit-authority-marta-marta-board-approves-nextgen-bus-network"],
+  anf_niskey23: ["Atlanta News First, April 2023", "https://www.atlantanewsfirst.com/2023/04/14/heads-up-16-marta-bus-stops-set-close-sw-atlanta-neighborhood"],
+  marta_heh: ["MARTA station profile, H.E. Holmes, 2017", "https://itsmarta.com/uploadedFiles/More/Transit_Oriented_Development/Station%20Profile%20Rev%202017-11-03%20H.E.%20Holmes.pdf"],
+  marta_kens: ["MARTA station profile, Kensington, 2017", "https://itsmarta.com/uploadedFiles/More/Transit_Oriented_Development/Station%20Profile%20Rev%202017-11-03%20Kensington.pdf"],
+  marta_cp: ["MARTA station profile, College Park, 2017", "https://itsmarta.com/uploadedFiles/More/Transit_Oriented_Development/Station%20Profile%20Rev%202017-11-03%20College%20Park.pdf"],
+  marta_dor: ["MARTA station profile, Doraville, 2017", "https://itsmarta.com/uploadedFiles/More/Transit_Oriented_Development/Station%20Profile%20Rev%202017-11-03%20Doraville.pdf"],
+  brookings11: ["Brookings, 2011", "https://www.brookings.edu/wp-content/uploads/2016/06/0818_transportation_media_memo.pdf"],
+  wsb_oakland17: ["WSB-TV, Dec 2017", "https://www.wsbtv.com/news/local/atlanta/after-33-years-marta-station-still-has-no-elevator-and-riders-have-had-enough/666899544/"],
+  marta_elev: ["MARTA, elevator and escalator status", "https://itsmarta.com/elevator-escalators-revised.aspx"],
+  anf_escalator25: ["Atlanta News First, July 2025", "https://www.atlantanewsfirst.com/2025/07/16/atlanta-leaders-call-investigation-riders-want-accountability-after-marta-escalator-emergency"],
+  beltline_jun26: ["Atlanta BeltLine, June 2026 construction update", "https://beltline.org/blog/atlanta-beltline-design-and-construction-updates-june-2026/"],
+  ajc_streetcar17: ["AJC, 2017", "https://ajc.com/news/local/atlanta-streetcar-ridership-plummets-and-many-don-pay/5zo9Wiujugtp7WqLgHbARI"],
+  wiki_streetcar: ["Wikipedia, Atlanta Streetcar", "https://en.wikipedia.org/wiki/Atlanta_Streetcar"],
+  fox5_streetcar24: ["Fox 5, 2024", "https://fox5atlanta.com/news/atlanta-streetcar-extension-faces-both-growing-support-opposition"],
+  acc_rail25: ["Atlanta Civic Circle, March 2025", "https://civicatlanta.org/blog/2025-03-16-mayor-reprioritizes-rail-on-beltline"],
+  axios_bat23: ["Axios Atlanta, Oct 2023", "https://www.axios.com/local/atlanta/2023/10/16/beltline-rail-opponents-better-atlanta-transit"],
+  ajc_rail24: ["AJC, 2024", "https://www.ajc.com/news/atlanta-news/debate-over-beltline-rail-heats-up/KUNOP2A4JVEUPBIPSQ7AYDAP6A/"],
+  saporta_rail24: ["Saporta Report, 2024", "https://saportareport.com/?p=1071483"],
+  rd_bond26: ["Rough Draft Atlanta, Sept 2026", "https://roughdraftatlanta.com/2026/09/09/bond-introduces-beltline-rail-resolution/"],
+  anf_audit24: ["Atlanta News First, Aug 2024", "https://www.atlantanewsfirst.com/2024/08/19/marta-owes-expansion-program-70m-audit-says-marta-disputes-findings/"],
+  anf_beltline26: ["Atlanta News First, Oct 2026", "https://www.atlantanewsfirst.com/2026/10/01/atlanta-beltline-secures-land-all-22-miles-trail/"],
+  sb_scooter19: ["Streetsblog, Aug 2019", "https://cal.streetsblog.org/2019/08/12/atlanta-bans-e-scooters-at-night-after-drivers-kill-four-riders"],
+  rd_scooter19: ["Rough Draft Atlanta, Aug 2019", "https://roughdraftatlanta.com/2019/08/08/city-of-atlanta-imposes-nighttime-ban-on-e-scooters-and-bikes/"],
+  gt_scooter22: ["Georgia Tech, Nov 2022", "https://sustainability.gatech.edu/index.php/hg/news/2022/11/03/do-electric-scooters-reduce-car-use"],
+  anf_curfew24: ["Atlanta News First, Dec 2024", "https://www.atlantanewsfirst.com/2024/12/29/curfew-shortened-atlanta-e-scooters-e-bikes"],
+  anf_curfew24b: ["Atlanta News First, Oct 2024", "https://www.atlantanewsfirst.com/2024/10/16/atlanta-city-council-consider-resolution-shorten-e-scooter-curfew-second-time/"],
+  atldot_micro24: ["ATLDOT presentation at ARC, 2024", "https://cdn.atlantaregional.org/wp-content/uploads/2b-atlanta-department-of-transportationfinch-.pdf"],
+  axios_micro25: ["Axios Atlanta, July 2025", "https://www.axios.com/local/atlanta/2025/07/10/atlanta-s-micromobility-boom-continues-in-2025"],
+  gt_micro26: ["Georgia Tech micromobility symposium summary, 2026", "https://urbanresearch.iac.gatech.edu/sites/default/files/2026-07/Micromobility%20Symposium_Summary_Final-compressed.pdf"],
+  ijerph21: ["Int. J. Environ. Res. Public Health, 2021", "https://ideas.repec.org/a/gam/jijerp/v18y2021i19p10281-d646612.html"],
+  metropole21: ["The Metropole, 2021", "https://themetropole.blog/2021/04/14/remembering-sweet-auburn-before-the-expressway-what-nostalgia-reveals-about-the-limits-of-postwar-liberalism/"],
+  gsu_diss15: ["Georgia State University dissertation, 2015", "https://scholarworks.gsu.edu/history_diss/45"],
+  sbd_freeways: ["Segregation by Design, Atlanta", "https://www.segregationbydesign.com/atlanta/freeways-urban-renewal"],
+  atlmag12: ["Atlanta magazine, 2012", "https://www.atlantamagazine.com/great-reads/marta-tsplost-transportation/"],
+  gt_pse17: ["Georgia Tech, Opportunity Deferred, 2017", "https://d8-sls.oit.gatech.edu/sites/default/files/documents/2017_pse-opportunity_deferred.pdf"],
+  rd_stitch24: ["Rough Draft Atlanta, Jan 2024", "https://roughdraftatlanta.com/2024/01/30/the-stitch-makes-strides-to-reconnect-downtown-atlanta/"],
+  gdot_connector: ["GDOT Downtown Connector study, 2015", "https://www.dot.ga.gov/AboutGeorgia/Board/Board%20Meeting%20Documents/Downtown%20Connector%20Study.pdf"],
+  saporta_ped23: ["Saporta Report, 2023", "https://saportareport.com/atlantas-pedestrian-death-rate-is-rising-and-worse-in-majority-black-neighborhoods-report-says/sections/reports/johnruch/"],
+  ahc_wall21: ["Atlanta History Center, 2021", "https://www.atlantahistorycenter.com/blog/atlantas-berlin-wall/"],
+  nation15: ["The Nation, 2015", "https://www.thenation.com/article/archive/stadiums-ruin-neighborhoods/tnamp/"],
+  gsu_georgiaave: ["Georgia State University Library, Georgia Avenue exhibit", "https://exhibits.library.gsu.edu/georgia-avenue/?p=259"],
+  nextcity16: ["Next City, 2016", "https://nextcity.org/urbanist-news/atlanta-manages-stormwater-by-not-fighting"],
+  wsbr_brt23: ["WSB Radio, June 2023", "https://wsbradio.com/news/local/marta-breaks-ground-first-new-transit-line-over-20-years/6GLFCTBLS5GKZFGWT47KE5BTYA"],
+  mt_aline26: ["Mass Transit, April 2026", "https://www.masstransitmag.com/bus/infrastructure/news/55371849/metropolitan-atlanta-rapid-transit-authority-marta-marta-launches-rapid-a-line-brt-service"],
+  mlpa03: ["Morningside Lenox Park Association, 2003", "https://www.mlpa.org/wp-content/uploads/2019/03/MLPA-NEWS-Fall-2003-interstate_that_almost_was.pdf"],
+  strip_i485: ["The Strip Project, Great Speckled Bird reprint (1974)", "https://thestripproject.com/i-485-wants-to-consume-atlanta"],
+  ksu_caution: ["Kennesaw State University archives, CAUTION collection", "https://soar.kennesaw.edu/handle/11360/7302"],
+  atlmag_i485: ["Atlanta magazine", "https://www.atlantamagazine.com/list/things-didnt-know-atlantas-past/eastside-atlanta-neighborhoods-almost-split-interstate/"],
+  rd_hulsey19: ["Rough Draft Atlanta, 2019", "https://roughdraftatlanta.com/2019/08/01/editors-letter-the-future-of-hulsey-yard/"],
+  aaroads400: ["AARoads, Georgia 400", "https://www.aaroads.com/guides/ga-400"],
+  rd_400_13: ["Rough Draft Atlanta, 2013", "https://roughdraftatlanta.com/2013/03/07/community-forged-by-ga-400-fight/"],
+  urbanize_hub404: ["Urbanize Atlanta", "https://atlanta.urbanize.city/post/buckheads-highway-capping-park-dream-alive-and-pulling-federal-cash"],
+  rd_ptree_oct15: ["Rough Draft Atlanta, Oct 2015", "https://roughdraftatlanta.com/2015/10/09/buckhead-residents-voice-opposition-to-bike-lanes-on-peachtree-road/"],
+  rd_ptree_dec15: ["Rough Draft Atlanta, Dec 11, 2015", "https://roughdraftatlanta.com/2015/12/11/gdot-no-bike-lanes-for-buckheads-peachtree-road-project/"],
+  rd_ptree_dec15b: ["Rough Draft Atlanta, Dec 25, 2015", "https://roughdraftatlanta.com/2015/12/25/61041/"],
+  rd_bcid17: ["Rough Draft Atlanta, 2017", "https://roughdraftatlanta.com/2017/06/10/bcid-shifts-bike-lane-plan-off-peachtree-road/"],
+  patch_streetcar15: ["Patch, Dec 2015", "https://patch.com/georgia/buckhead/buckhead-removed-streetcar-plan-0"],
+  ajc_bike26: ["AJC, July 2026", "https://www.ajc.com/news/2026/07/new-traffic-pattern-bike-barriers-elevate-safety-and-some-drivers-tires/"],
+  atldot_bikeinv: ["ATLDOT bicycle facilities inventory", "https://atldot.atlantaga.gov/wp-content/uploads/2025/09/Bicycle_Facilities_compressed.pdf"],
+  axios_bike26: ["Axios Atlanta, June 2026", "https://www.axios.com/local/atlanta/2026/06/22/atlanta-bikeability-ranking-peopleforbikes-protected-bike-lanes-connectivity"],
+  anf_bridge26: ["Atlanta News First, Sept 2026", "https://www.atlantanewsfirst.com/2026/09/03/brookhaven-residents-oppose-proposed-southern-connector-bridge-over-i-85/"],
+  saporta_perry22: ["Saporta Report, 2022", "https://saportareport.com/atlanta-housing-wants-to-sell-affordably-priced-homes-at-long-vacant-westside-properties/atlanta-civic-circle/housing-affordability/seankeenan/"],
+  gt_allen: ["Georgia Tech, Ivan Allen mayoral records", "https://ivanallen.iac.gatech.edu/mayoral-records/traditional/exhibits/show/urban-environment"],
+  epa_proctor: ["EPA, Proctor Creek fact sheet", "https://www.epa.gov/sites/default/files/2015-10/documents/proctorcreek_factsheet-final_2.pdf"],
+  ajc_flood26: ["AJC, Feb 2026", "https://www.ajc.com/news/2026/02/sponge-parks-and-underground-vaults-inside-atlantas-fight-to-stop-floods/"],
+  ga_enc_marta: ["New Georgia Encyclopedia, MARTA", "https://www.georgiaencyclopedia.org/articles/business-economy/metropolitan-atlanta-rapid-transit-authority-marta/"],
+  gf18: ["GwinnettForum, 2018", "https://www.gwinnettforum.com/2018/04/brack-gwinnett-metro-atlanta-finally-moving-toward-key-transit-vote/"],
+  wiki_marta_hist: ["Wikipedia, History of MARTA", "https://en.wikipedia.org/wiki/History_of_Metropolitan_Atlanta_Rapid_Transit_Authority"],
+  gf24: ["GwinnettForum, 2024", "https://www.gwinnettforum.com/2024/01/brack-background-on-voting-about-transit-in-gwinnett/"],
+  gdp19: ["Gwinnett Daily Post, 2019", "https://www.gwinnettdailypost.com/local/gwinnett-back-at-square-one-after-marta-rejected-in-key/article_5703ed50-5969-5cb9-8448-be0254ec809d.html"],
+  cfte_clayton: ["Center for Transportation Excellence, Clayton County", "https://cfte.org/elections/clayton-county"],
+  apn15: ["Atlanta Progressive News, 2015", "https://atlantaprogressivenews.com/2015/04/09/apn-legislative-wrap-up-georgia-general-assembly-2015"],
+  sb_usa17: ["Streetsblog USA, 2017", "https://usa.streetsblog.org/2017/02/08/how-racial-discrimination-shaped-atlantas-transportation-mess/"],
+  ajc_heat23: ["AJC, 2023", "https://www.ajc.com/news/atlanta-news/heat-risk-is-growing-these-are-atlantas-most-vulnerable-neighborhoods/BBMOP3BNH5CQDEWBHRWCDVUP5M/"],
+  alive_heat21: ["11Alive, 2021", "https://11alive.com/article/tech/science/environment/atanta-heat-islands-where-they-are-study-maps-spelman-university/85-d3c5f9c0-2c36-4e66-9a54-eabbdc652f8b"],
+  capb23: ["Capital B Atlanta, 2023", "https://atlanta.capitalbnews.org/?p=3963"],
+  atlstudies17: ["Atlanta Studies, 2017", "https://atlantastudies.org/2017/09/07/jason-rhodes-geographies-of-privilege-and-exclusion-the-1938-home-owners-loan-corporation-residential-security-map-of-atlanta/"],
+  wabe_cook: ["WABE", "https://wabe.org/?p=619970"],
+  fox5_heat23: ["Fox 5, 2023", "https://www.fox5atlanta.com/news/why-some-areas-of-atlanta-may-be-hotter-than-others"],
+  eww_90: ["Extreme Weather Watch, Atlanta days at 90°F", "https://www.extremeweatherwatch.com/cities/atlanta/yearly-days-of-90-degrees"],
+  nws_2024: ["NWS Peachtree City, 2024 annual climate summary", "https://www.weather.gov/ffc/2024AnnualClimateSummary"],
+  anf_summer26: ["Atlanta News First, Sept 2026", "https://www.atlantanewsfirst.com/2026/09/09/atlantas-meteorological-summer-how-2026-stacks-up/"],
+  wsb_peoplestown22: ["WSB-TV, Aug 2022", "https://www.wsbtv.com/news/local/atlanta/atlanta-spend-more-than-63-million-settle-decade-long-flood-dispute/THLZT2UNNFADLASAPYL2QAZSYU/"],
+  cwa_history: ["Clean Water Atlanta, program history", "https://cleanwateratlanta.h2o4atl.com/index.php/history-3/"],
+  wabe_helene24: ["WABE, Sept 2024", "https://wabe.org/?p=656580"],
+  rd_helene24: ["Rough Draft Atlanta, Sept 2024", "https://roughdraftatlanta.com/2024/09/27/atlanta-storm-damage-helene/"],
+  nws_2009: ["NWS Peachtree City, Sept 2009 flood summary", "https://www.weather.gov/ffc/0909epicflood"],
+  rd_northside18: ["Rough Draft Atlanta, 2018", "https://roughdraftatlanta.com/2018/03/14/safety-traffic-concerns-expressed-at-northside-drive-bridge-meeting/"],
+  gt_canopy23: ["Georgia Tech, Atlanta urban tree canopy 2023 report", "https://geospatial.gatech.edu/AtlantaUTC/AtlantaCanopyReport2023GT.pdf"],
+  treesatl: ["Trees Atlanta, 2026", "https://www.treesatlanta.org/news/atlanta-canopy-coverage-2023/"],
+  ajc_tree25: ["AJC, June 2025", "https://www.ajc.com/news/2025/06/despite-objections-city-council-committee-advances-pared-back-tree-ordinance/"],
+  saporta_shelter21: ["Saporta Report, 2021", "https://saportareport.com/atlanta-kills-obscure-law-limiting-bus-shelters-as-marta-builds-more/columnists/johnruch/"],
+  hei18: ["Health Effects Institute, DRIVE study", "https://www.healtheffects.org/sites/default/files/liang-ac2023.pdf"],
+  ala26: ["American Lung Association, State of the Air 2026", "https://www.lung.org/media/press-releases/fy26-sota-georgia"],
+  ala24: ["American Lung Association, State of the Air 2024", "https://www.lung.org/media/press-releases/sota-atlanta-2024"],
+  dph_child: ["Georgia DPH, 2020 child health data summary", "https://dph.georgia.gov/document/document/2020-georgia-child-data-summary-pdf/download"],
+  martaarmy: ["MARTA Army stop census, 2020", "https://www.martaarmy.org/stop-census"],
+  axios_propel25: ["Axios Atlanta, Oct 2025", "https://www.axios.com/local/atlanta/2025/10/08/marta-riders-call-for-more-reliable-frequent-bus-service-in-new-propel-atl-report"],
+  arc_survey19: ["ARC regional transit on-board survey, 2019", "https://cdn.atlantaregional.org/wp-content/uploads/appendix-b-presentation-of-findings.pdf"],
+  arc_wbt: ["ARC Walk.Bike.Thrive (2010 data)", "https://cdn.atlantaregional.org/wp-content/uploads/walkbike-thrive-part-1-final-web-.pdf"],
+  ntd19: ["FTA National Transit Database, MARTA 2019", "https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2019/40022.pdf"],
+  ntd24: ["FTA National Transit Database, MARTA 2024", "https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/40022.pdf"],
+  sga26: ["Smart Growth America, Dangerous by Design 2026", "https://www.smartgrowthamerica.org/signature-reports/dangerous-by-design/2026-dbd-rankings/"],
+  gohs20: ["Georgia Governor's Office of Highway Safety, 2020 pedestrian fact sheet", "https://www.gahighwaysafety.org/wp-content/uploads/2023/03/2020_PedestriansandBicyclists_GTSFQuick.pdf"],
+  ghsa25: ["GHSA, pedestrian fatalities by state, 2024 data", "https://www.ghsa.org/sites/default/files/2025-07/Pedestrian%20Traffic%20Fatalities%20by%20State%20-%202024%20Data.pdf"],
+  wsb_lights: ["WSB-TV", "https://www.wsbtv.com/news/local/mayor-dickens-plans-install-more-street-lights-safer-city-with-light-night-program/UQRRR56MSNGJ7J5TI3HTYDCYFM"],
+  ajc_gini22: ["AJC, 2022", "https://www.ajc.com/news/investigations/atlanta-has-the-highest-income-inequality-in-the-nation-census-data-shows/YJRZ6A4UGBFWTMYICTG2BCOUPU/"],
+  ajc_jobs13: ["AJC on Brookings, 2013", "https://www.ajc.com/news/opinion/job-sprawl-stalls/PlvN6j3hrOnUQU6PVtoIaO/"],
+  atl_jobaccess22: ["The ATL, job access memo, 2022", "https://atltransit.ga.gov/wp-content/uploads/2022/04/Job-Access.pdf"],
+  marta_mobility: ["MARTA Mobility", "https://itsmarta.com/marta-mobility.aspx"],
+  marta_access26: ["MARTA Accessibility Committee summary, May 2026", "https://itsmarta.com/uploadedFiles/More/Diversity_and_Inclusion/MARTA%20ACCESSIBILITY%20COMMITTEE%20Meeting%20-%20May%2014,%202026%20Summary.pdf"],
+  rd_vz24: ["Rough Draft Atlanta, April 2024", "https://roughdraftatlanta.com/2024/04/26/atlantas-vision-zero-plan-aims-to-eliminate-traffic-fatalities-by-2040/"],
+  wabe_2024deaths: ["WABE, 2025", "https://www.wabe.org/new-study-reports-cars-killed-more-people-in-atlanta-than-homicides-in-2024/"],
+  wiki_transport_atl: ["Wikipedia, Transportation in Atlanta (citing ACS 2022)", "https://en.wikipedia.org/wiki/Transportation_in_Atlanta"],
+  sunrise: ["sunrise-sunset.org, Atlanta", "https://sunrise-sunset.org/us/atl"],
+  rd_atldot19: ["Rough Draft Atlanta, March 2019", "https://roughdraftatlanta.com/2019/03/14/atlanta-mayor-bottoms-plans-to-create-new-city-transportation-department/"],
+  arc_rcs26: ["ARC Regional Commuter Survey, 2026", "https://cdn.atlantaregional.org/wp-content/uploads/04-20260306-tcc-rcs-presentation.pdf"],
+  gsu_about: ["Georgia State University", "https://www.gsu.edu/about/"],
+  gt_about: ["Georgia Tech", "https://www.gatech.edu/about"],
+  scad_facts: ["SCAD facts", "https://www.scad.edu/about/scad-glance/scad-facts"],
+  spelman: ["Spelman College", "https://www.spelman.edu/about-us/"],
+  morehouse: ["Morehouse College", "https://www.morehouse.edu/about/"],
+  anf_geofence26: ["Atlanta News First, Aug 2026", "https://www.atlantanewsfirst.com/2026/08/28/bird-lime-restrict-scooters-downtown-atlanta-tuesday-block-planned-takeover/"],
+  mt_amenities24: ["Mass Transit, 2024", "https://www.masstransitmag.com/technology/facilities/shelters-benches-and-equipment/press-release/55134690/metropolitan-atlanta-rapid-transit-authority-marta-marta-installs-1000-bus-stop-amenities-throughout-its-service-area"],
+  acc_breeze26: ["Atlanta Civic Circle, May 2026", "https://civicatlanta.org/blog/2026-05-17-marta-board-hears-better-breeze-rollout-struggles"],
+  census_atl: ["Census QuickFacts, Atlanta city, ACS 2020 to 2024", "https://www.census.gov/quickfacts/fact/table/atlantacitygeorgia/PST045224"]
+};
+
+/* Each site: id, c (category), w (weight 1 to 3), n (name), ll [lat,lng], h (headline), who, ev (evidence), why (tags), note (why it persists). Evidence c: high, med, low. */
+const SITES = [
+{ id:1, c:"x", w:3, n:"Buford Highway (SR 13), Brookhaven to Doraville", ll:[33.868,-84.312],
+  h:"Seven lanes of state highway are the main street of the region's most immigrant corridor. For decades, signalized crossings sat about a mile apart.",
+  who:"Residents of the apartment belt along the corridor. Doraville is 45.1% foreign-born and 70.3% of its households speak a language other than English at home. Chamblee is 34.0% foreign-born, Brookhaven 21.1%.",
+  ev:[
+    {t:"Six to seven lanes, historically no median, 45 mph. Crossings and signals about a mile apart on long stretches. GDOT sets the speed and the design.", s:["usdot16","pbs10"], c:"high"},
+    {t:"DeKalb stretch: 154 pedestrians struck since 2003; 9 killed in 10 years, as of 2016.", s:["usdot16"], c:"high"},
+    {t:"About 30 pedestrians killed and 250 or more injured from 2000 to 2010, three times the rate of any other Georgia road.", s:["pbs10"], c:"med"},
+    {t:"Aug 8, 2024, about 3 a.m.: a hit-and-run driver killed a man in the 3400 block near Briarwood Rd, Brookhaven. That ended GDOT's claim of no pedestrian deaths between Lenox Rd and Doraville in about five years, after $50 million or more spent on the corridor over a decade.", s:["fox5_bufordHR24","axios_buford23"], c:"high"},
+    {t:"GDOT raised-median and refuge-island project, Afton Ln to Clairmont Terr: notice to proceed April 2022, completion March 2025.", s:["brookhaven_gdot"], c:"high"},
+    {t:"Foreign-born share (ACS 2020 to 2024): Doraville 45.1%, Chamblee 34.0%, Brookhaven 21.1%.", s:["census_doraville"], c:"high"},
+    {t:"Who owns a piece of it: GDOT, DeKalb County, Brookhaven, Chamblee, Doraville, MARTA, the Chamblee Doraville CID and ARC. Doraville's 2023 federal safety pitch named one plan across jurisdictional lines as the goal. Brookhaven adopted its own corridor safety plan in 2025.", s:["arc_doraville23","brookhaven_sap"], c:"high"},
+    {t:"The cities do not own the curb-cut rights-of-way. A GDOT-backed median plan in Doraville was rejected by Korean business owners who feared losing left-turn access (2017).", s:["sb_la17"], c:"high"}
+  ],
+  why:["j","f","n"], note:"The road was built as a highway to a car-only suburb, then became a walking main street without a design change. Five governments plus GDOT share it. An early GDOT-backed median plan in Doraville was rejected by business owners who feared losing left-turn access." },
+
+{ id:2, c:"x", w:3, n:"Moreland Avenue (US 23 / SR 42) at Little Five Points", ll:[33.764,-84.349],
+  h:"A four-lane state highway runs through one of the densest walking districts in the city. It had the most pedestrian deaths of any Atlanta street in 2022.",
+  who:"Little Five Points, Edgewood, Reynoldstown and East Atlanta walkers. BeltLine users where the trail meets the road at the I-20 bridge.",
+  ev:[
+    {t:"Three pedestrian deaths in 2022, the most of any Atlanta street that year.", s:["fox5_ped23"], c:"high"},
+    {t:"Two fatal crashes on Moreland in the second quarter of 2024 alone.", s:["fcrc_q2_24"], c:"high"},
+    {t:"Moreland is #3 of the top ten High Injury Network corridors in the city's Vision Zero plan.", s:["vz_plan"], c:"high"},
+    {t:"It is a GDOT state highway. The city cannot redesign it on its own.", s:["axios_moreland25"], c:"high"},
+    {t:"At Arkwright Pl north of I-20, GDOT work has pushed BeltLine users into traffic (2026). The I-20 bridge carries about 46,400 vehicles a day.", s:["hood_moreland26","bridge_moreland"], c:"med"}
+  ],
+  why:["j","f"], note:"The state owns the road through a neighborhood that stopped being a highway corridor decades ago. The city's safety plan can rank it but cannot restripe it." },
+
+{ id:3, c:"x", w:2, n:"Memorial Drive (SR 154), Moreland Ave to Candler Rd", ll:[33.748,-84.320],
+  h:"Among the deadliest corridors in Fulton, DeKalb and Clayton from 2019 to 2023. Four unsignalized crosswalks with no refuge island.",
+  who:"Kirkwood, East Lake and Belvedere Park residents. Bus riders boarding on the corridor.",
+  ev:[
+    {t:"1,140 crashes at 28 intersections from 2013 to 2021; 9 pedestrian crashes, 2 of them fatal; four unsignalized crosswalks lack refuges. Three lanes, posted 35 mph.", s:["gdot_memorial22"], c:"high"},
+    {t:"The reversible center lanes were removed in 2019.", s:["wsb_memorial19"], c:"high"},
+    {t:"Memorial Dr, Covington Hwy and Tara Blvd had the most traffic deaths in Fulton, DeKalb and Clayton from 2019 to 2023.", s:["axios_fatal25"], c:"med"}
+  ],
+  why:["j","r"], note:"A GDOT route that crosses from the City of Atlanta into unincorporated DeKalb. The 2022 study is the deliverable so far." },
+
+{ id:4, c:"x", w:3, n:"Donald Lee Hollowell Parkway (US 278 / SR 8), H.E. Holmes Dr to Stiff St", ll:[33.776,-84.460],
+  h:"It took more than 25 pedestrian deaths to get a road diet. Two of the dead were walking to or from work at night.",
+  who:"Bankhead, Grove Park, Carey Park and Westside residents. Shift workers walking to bus stops after dark.",
+  ev:[
+    {t:"1,906 crashes from 2013 to 2021, including 5 fatal pedestrian crashes. Four lanes with no median were converted to three.", s:["gdot_hollowell23"], c:"high"},
+    {t:"Atlanta police: more than 25 pedestrians killed since 2010, more than 10 since 2021.", s:["wsb_hollowell23"], c:"med"},
+    {t:"Brittany Glover was killed in Sept 2022 crossing Hollowell before a Spirit Airlines shift. Tavarius Ridgeway was killed on the same road on Thanksgiving night 2022. The driver was never caught.", s:["wsb_ped22"], c:"high"},
+    {t:"Hollowell is #1 on the Vision Zero High Injury Network. After the redesign it dropped from #8 to #19 on Propel ATL's high-crash ranking.", s:["vz_plan","arc_q4_25"], c:"high"}
+  ],
+  why:["f","j"], note:"The corridor was the city's worst for a decade before the fix. The deaths accumulated until they became a project." },
+
+{ id:5, c:"x", w:2, n:"Peachtree Street at Peachtree Center", ll:[33.760,-84.388],
+  h:"A downtown crosswalk faded until it was invisible. A man was killed in it. Then the city paved it over.",
+  who:"Downtown workers, hotel and convention visitors, Georgia State students.",
+  ev:[
+    {t:"Pradeep Sood was killed in Feb 2025 at a faded crosswalk near Peachtree Center. The city paved over the crosswalk afterward. His family filed a $12 million suit in Feb 2026.", s:["anf_sood26"], c:"high"},
+    {t:"Of 33 fatal crashes the city reviewed in 2024, 14 involved pedestrians; 17 were on GDOT-owned roads, 14 on city streets, 2 on private property; 21 were on the High Injury Network.", s:["fcrc_24"], c:"high"}
+  ],
+  why:["f","m"], note:"Not a design failure. A maintenance failure on the city's best-known street, in its most-walked district." },
+
+{ id:6, c:"x", w:2, n:"Martin Luther King Jr. Drive SW (SR 139 / US 29) at Adamsville", ll:[33.7555,-84.490],
+  h:"Five fatal crashes in fifteen months on the city's #2 High Injury corridor, including a pedestrian killed at a bus stop.",
+  who:"Adamsville, Collier Heights and West Lake residents. Bus riders on one of the west side's main lines.",
+  ev:[
+    {t:"Five fatal crashes on MLK Jr Dr from 2024 through the first quarter of 2025, including a pedestrian at a bus stop near Adamsville Place Pkwy.", s:["fcrc_annual"], c:"high"},
+    {t:"MLK Jr Dr is #2 of the top ten High Injury Network corridors.", s:["vz_plan"], c:"high"},
+    {t:"The I-20 West route just north of here was described in a 1960 city planning report as the boundary between white and Black communities.", s:["ahc_walls22"], c:"high"}
+  ],
+  why:["j","f"], note:"A state route through a neighborhood the city itself once described as being on the wrong side of a deliberate line." },
+
+{ id:7, c:"x", w:2, n:"Campbellton Road SW (SR 154 / SR 166) at Delowe Dr", ll:[33.7115,-84.4555],
+  h:"Four fatal crashes in fifteen months on a corridor whose bus rapid transit line was adopted in 2018 and is still aiming for 2028.",
+  who:"Southwest Atlanta: Greenbriar, Adams Park, Fort McPherson. Riders of one of MARTA's busiest bus corridors.",
+  ev:[
+    {t:"Four fatal crashes on Campbellton Rd from 2024 through the first quarter of 2025.", s:["fcrc_annual"], c:"high"},
+    {t:"Campbellton is #8 on the Vision Zero High Injury Network top ten.", s:["vz_plan"], c:"high"},
+    {t:"Campbellton Rd BRT: 6 miles, 9 stations, adopted in the 2018 More MARTA list, with a goal of 2028 operations and federal money still needed as of 2022.", s:["saporta_campbellton22"], c:"high"}
+  ],
+  why:["r","m"], note:"A decade from adoption to opening, if the date holds. The corridor keeps killing people in the meantime." },
+
+{ id:8, c:"x", w:2, n:"Candler Road (SR 155), south DeKalb", ll:[33.735,-84.288],
+  h:"A man was killed while waiting at a bus stop. Across the five-county region, 59% of pedestrian deaths happen within an eighth of a mile of a bus stop.",
+  who:"Belvedere Park, Gresham Park and Candler-McAfee bus riders.",
+  ev:[
+    {t:"Allen London was killed while waiting at a Candler Rd bus stop in 2024.", s:["cbs_london25"], c:"high"},
+    {t:"59% of pedestrian deaths in the five-county region in 2024 occurred within one-eighth of a mile of a bus stop.", s:["arc_q4_25"], c:"high"},
+    {t:"DeKalb County pedestrian deaths: 42 in 2022, 59 in 2023 (a decade high), 40 in 2024.", s:["wsb_dekalb25"], c:"high"}
+  ],
+  why:["j","f"], note:"The stop is where the bus rider becomes a pedestrian on a state road. Nobody owns that transition." },
+
+{ id:9, c:"x", w:1, n:"Clairmont Road at Canmont Drive, Brookhaven", ll:[33.843,-84.309],
+  h:"A woman was killed crossing where there is no crosswalk on a 40 mph road. The city's follow-up traffic analysis chose no change.",
+  who:"Brookhaven apartment residents walking to Buford Hwy and the Clairmont retail strip.",
+  ev:[
+    {t:"Linda Powell was killed Oct 19, 2023 at Clairmont Rd and Canmont Dr. No crosswalk, posted 40 mph. Brookhaven's traffic analysis afterward recommended no change.", s:["rd_powell24"], c:"high"}
+  ],
+  why:["r"], note:"Studied, then closed. The analysis is the answer." },
+
+{ id:10, c:"x", w:1, n:"Cheshire Bridge Road, 2000 block", ll:[33.813,-84.360],
+  h:"Two pedestrian deaths in nine months on a nightlife strip with long gaps between marked crossings.",
+  who:"Late-night workers and patrons. Lindridge-Martin Manor and Morningside walkers.",
+  ev:[
+    {t:"The city's Fatal Crash Review Committee lists a pedestrian death on Cheshire Bridge Rd near Woodland Ave in the second quarter of 2024. A second death, at 12:05 a.m. on Oct 15, 2023 outside a crosswalk in the 2000 block, was reported by WSB-TV.", s:["fcrc_q2_24"], c:"med"},
+    {t:"In the second quarter of 2024, 10 of the city's 16 fatal crashes happened between 6 p.m. and 6 a.m. The committee logs time but not lighting.", s:["fcrc_q2_24"], c:"med"}
+  ],
+  why:["f"], note:"A street everyone drives at night and nobody expects anyone to cross." },
+
+{ id:11, c:"p", w:2, n:"Capitol View: Dill Avenue and Allene Avenue", ll:[33.7222,-84.4170],
+  h:"Seniors in wheelchairs and parents with strollers travel in the street because there is no sidewalk. Officials said there is no money to fill the gaps.",
+  who:"Capitol View, Capitol View Manor and Sylvan Hills residents. Nine pedestrians were killed in Council District 12 in 2023.",
+  ev:[
+    {t:"Oct 2024 neighborhood march on Allene Ave. Wheelchairs and strollers in the roadway. Officials said no funding exists to fill the gaps. Pedestrians were struck on Dill Ave in 2019 and 2023.", s:["anf_capview24"], c:"high"},
+    {t:"Citywide, 44% of street miles have a sidewalk on at least one side (876 of 1,988 miles), so 56% have none.", s:["atp_appx"], c:"high"}
+  ],
+  why:["m","f"], note:"The gap is visible from the street every day. The budget line is not." },
+
+{ id:12, c:"p", w:3, n:"The 25-year sidewalk (City Hall)", ll:[33.7489,-84.3902],
+  h:"The city settled a federal ADA lawsuit over sidewalks and curb ramps for $1.6 million, zero construction money and a 2049 deadline. Under city code, the abutting property owner still pays for repairs.",
+  who:"Wheelchair and mobility-device users. The 2009 federal settlement cited more than 22% of Atlanta residents with a disability. Anyone pushing a stroller or pulling a cart.",
+  ev:[
+    {t:"Lawson v. City of Atlanta, filed May 24, 2018, alleged the city broke its Dec 2009 Department of Justice settlement on curb ramps. A 2017 deposition put about 5% of 15,804 bad or missing ramps fixed.", s:["lawson_complaint","doj09"], c:"high"},
+    {t:"Council approved a $1.6 million settlement in July 2023: $600,000 damages, $625,000 compliance oversight, $370,000 consultants over 25 years. No construction money. Barriers to be removed within 25 years.", s:["ajc_ada23","clearinghouse"], c:"high"},
+    {t:"2025 ADA self-evaluation: 1,157 miles of paved sidewalk, average condition marginal, 4,237 missing curb ramps, 2,410 ramps needing replacement, a self-score of 54 out of 100.", s:["anf_ada25"], c:"high"},
+    {t:"Draft ADA Transition Plan (2026): only 45 to 50% of about 22,000 sidewalk segments rated fair or better; a 25-year schedule; a planning assumption of $1 million per mile. Backlog estimates run $1 billion to $2 billion. The decree sets no minimum spend.", s:["ada_plan26","propel_sidewalk26"], c:"med"},
+    {t:"City code makes abutting owners responsible for sidewalk repair. Enforcement letters in 2013 caused outrage and stopped; injury settlements then passed $4 million. A 2015 ordinance let the city spend public money first but kept owners liable. In March 2026 the court-created ADA committee asked the city to take over maintenance.", s:["ajc_sidewalk14","rd_sidewalk15","acc_ada26"], c:"high"},
+    {t:"A 2010 city audit recommended $15.18 million a year for sidewalks against an actual budget of $0.42 million. In 2013 the city allotted $50,000 to $250,000 a year for sidewalk issues.", s:["lawson_complaint","gt_sidewalk13"], c:"med"}
+  ],
+  why:["m","r","j"], note:"A 2009 settlement, a 2018 lawsuit, a 2023 settlement, a 2049 deadline. The responsibility sits with whoever happens to own the house next to the broken slab." },
+
+{ id:13, c:"p", w:1, n:"Westview Drive SW", ll:[33.741,-84.433],
+  h:"A protected bike lane was removed without public notice after church parking complaints. Nine years later the same street is the test site for grinding down broken sidewalks.",
+  who:"Westview and West End cyclists and walkers. Churchgoers who park on the street.",
+  ev:[
+    {t:"About 1,000 feet of protected bike lane on Westview Dr was pulled out in July 2017 without public notice, after church parking complaints and concerns about gentrification.", s:["wabe_westview17"], c:"high"},
+    {t:"Westview Dr is the city's 2026 sidewalk-grinding pilot, with more than 100 complaints logged.", s:["ada_plan26"], c:"high"}
+  ],
+  why:["n","m"], note:"A small organized objection beat a built facility. The street got a pilot, not a sidewalk." },
+
+{ id:14, c:"p", w:1, n:"Cleveland Avenue over I-75", ll:[33.6981,-84.3989],
+  h:"A sidewalk project that started in 2018 will not be built until 2026 or 2027. The bridge carries 19,600 vehicles a day.",
+  who:"Lakewood Heights and Browns Mill Park walkers moving between Metropolitan Pkwy and Jonesboro Rd.",
+  ev:[
+    {t:"Cleveland Ave Pedestrian Mobility Improvements (project 3028) began in 2018 with construction scheduled for 2026 to 2027. The separate sidewalk-installation project (4092, $1.55 million) was not to start building until Sept 2026.", s:["atldot_cleve1","atldot_cleve2"], c:"high"},
+    {t:"Cleveland Ave is on the Vision Zero High Injury Network.", s:["vz_plan"], c:"high"}
+  ],
+  why:["m","r"], note:"Eight years from project start to construction for a sidewalk." },
+
+{ id:15, c:"p", w:2, n:"Glenwood Road, Candler Rd to Columbia Dr (DeKalb)", ll:[33.7308,-84.2612],
+  h:"Two miles of arterial had no sidewalk until December 2024. The third phase is still in land condemnation. DeKalb spent $2.19 million of a $16.76 million sidewalk promise in seven years.",
+  who:"Belvedere Park and White Oak Hills residents. Bus riders on Glenwood.",
+  ev:[
+    {t:"About 2 miles of new sidewalk on both sides, Candler Rd to Columbia Dr, $4.4 million, opened Dec 2024 as phase 2 of 3. Phase 3 (Covington Hwy to Columbia Dr) was still in right-of-way condemnation in Dec 2025.", s:["dekalb_glenwood","dekalb_splost_dec25"], c:"high"},
+    {t:"DeKalb SPLOST I pedestrian category: $16.76 million on the 2017 ballot, $8.02 million authorized, $2.19 million spent as of Jan 31, 2025.", s:["dekalb_splost_status"], c:"high"},
+    {t:"A White Oak Hills resident told the county's 2055 plan that the sidewalks on Candler, Glenwood and Memorial are too narrow, uneven and too close to fast traffic.", s:["dekalb_2055"], c:"med"}
+  ],
+  why:["m","j"], note:"Unincorporated DeKalb has no city DOT. The sales tax passed; the money mostly did not move." },
+
+{ id:16, c:"p", w:2, n:"Buckhead residential streets, the other sidewalk desert", ll:[33.8405,-84.4060],
+  h:"The wealthiest travelshed in the city has sidewalks on 24% of its street miles. The airport travelshed has 9%. Car dependence was designed in at both ends of the income scale.",
+  who:"Buckhead residents who do not drive: domestic and service workers, teenagers, older adults.",
+  ev:[
+    {t:"Sidewalk coverage by travelshed: Airport 9%, Buckhead Residential 24% (148 street miles, 36 with sidewalk), Buckhead Business 27%, Central Business District 92%.", s:["atp_appx"], c:"high"},
+    {t:"Walk Score puts two Buckhead-area neighborhoods, Margaret Mitchell (4) and Castlewood (5), among the city's five least walkable, with Midwest Cascade (3), Carver Hills (4) and Leila Valley (4). Georgia State scores 96.", s:["walkscore"], c:"high"},
+    {t:"Brookhaven's sidewalk petition program requires 50% plus one of affected households to sign and owners to pay a share (policy dated 2020).", s:["brookhaven_petition"], c:"high"}
+  ],
+  why:["n","f"], note:"Both the Atlanta owner-repair rule and Brookhaven's petition program make a sidewalk something a street opts into." },
+
+{ id:17, c:"t", w:3, n:"Clifton Corridor: Emory, CDC, Emory University Hospital", ll:[33.793,-84.322],
+  h:"A hospital, university and federal job center with no rail. Envisioned in 1961. Studied in 2012. Downgraded to buses in 2023. In 2026 the recommended terminus stops a mile short and the records request was denied.",
+  who:"Emory, CDC, VA and Children's Healthcare employees and patients. Druid Hills and Kirkwood neighbors.",
+  ev:[
+    {t:"Rail to Clifton was envisioned as early as 1961. Light rail was recommended in 2012. The 2012 regional T-SPLOST that would have funded it was defeated.", s:["wiki_clifton"], c:"med"},
+    {t:"The 2018 More MARTA list carried $350 million for light rail from Lindbergh to Emory and the CDC, within a $2.7 billion, 17-project program promising 22 miles of light rail, 14 of BRT and 26 of arterial rapid transit.", s:["rd_moremarta18"], c:"high"},
+    {t:"Feb 2023: light rail dropped for bus rapid transit, $1.3 billion against $2.9 billion.", s:["rd_clifton23"], c:"high"},
+    {t:"Feb 2026: MARTA recommended a Lindbergh terminus. The Armour Yards option adds 6 to 10 years (13 to 18 in total). MARTA denied a records request for the study. No funding exists for a new station.", s:["ajc_clifton26"], c:"high"},
+    {t:"In 2000 MARTA's chair cited Kirkwood and Druid Hills opposition to rail. In 2022 the Druid Hills Civic Association called a special meeting on the alignment.", s:["emory_marta00","dhca22"], c:"med"},
+    {t:"The April 2026 bus redesign retired Routes 6 and 36. Emory is now served by Routes 11, 15 and 17.", s:["emory_nextgen"], c:"high"}
+  ],
+  why:["r","n","m"], note:"Sixty-five years of planning for the same three miles." },
+
+{ id:18, c:"t", w:3, n:"Hartsfield-Jackson: the shift that ends after the last train", ll:[33.6407,-84.4277],
+  h:"63,000 people work here. The last train leaves at 1 a.m. and the first weekend train arrives at 6. A National Academies study found MARTA's hours miss early and late shifts, with no transit at all to the south-side cargo area.",
+  who:"Ramp, cargo, concessions, cleaning and TSA workers. Many live south of the airport with no rail.",
+  ev:[
+    {t:"More than 63,000 employees.", s:["atl_about"], c:"high"},
+    {t:"MARTA rail: weekdays 4:45 a.m. to 1 a.m., weekends 6 a.m. to 1 a.m. About 20-minute headways before 6 a.m., after 7 p.m. and all weekend. Bus: weekdays 5 a.m. to 1 a.m., weekends 5 a.m. to 12:30 a.m.", s:["marta_howto","marta_sched"], c:"high"},
+    {t:"National Academies (2024): MARTA hours miss early and late shifts; no transit reaches the south-side cargo area, which contributes to staffing shortages.", s:["nasem24"], c:"high"},
+    {t:"The TSA officers' union says many officers live south of the airport with no rail and face hour-plus commutes (2026).", s:["ajc_tsa26"], c:"high"},
+    {t:"An airport worker reported train delays about three times a week with 30 to 60 minute waits (2024).", s:["anf_airport24"], c:"high"}
+  ],
+  why:["f","m"], note:"The schedule has been the schedule for so long that a 1 a.m. last train reads as a fact of nature. MARTA gets no state operating money." },
+
+{ id:19, c:"t", w:2, n:"Peachtree Street at SCAD Atlanta: the bus that disappeared", ll:[33.7988,-84.3886],
+  h:"In April 2026 MARTA removed Route 40, the Peachtree Street bus, because the budget could not fund 10-minute service. One route at 20-minute headways now covers the city's main street between Arts Center and Brookhaven.",
+  who:"SCAD Atlanta students and staff. Piedmont Hospital shift workers at Collier Rd. Brookwood and Peachtree Hills residents.",
+  ev:[
+    {t:"The NextGen network launched April 18, 2026: routes cut from 113 to 81. Total service hours are slightly above 2023 but below 2019. Route 40 (Peachtree St) was removed entirely because the budget could not fund 10-minute service. The city's More MARTA money went to capital projects, not bus service.", s:["humantransit26","marta_nextgen"], c:"high"},
+    {t:"Route 23 (Peachtree Rd / Buckhead) runs Arts Center to Brookhaven every 20 minutes, seven days, with alternate trips to Chamblee every 40.", s:["marta_r23"], c:"high"},
+    {t:"Bus on-time performance was 72.78% in May 2026 against a 78.5% target. MARTA reported 120 operator vacancies and absenteeism of 20 to 25%.", s:["marta_otp","acc_otp26"], c:"high"},
+    {t:"On the morning of Oct 9, 2026, MARTA's alert page listed 34 trip cancellations across 25 routes. In 2025, Route 221 cancelled about 9% of trips and Route 853 more than 7%.", s:["marta_alerts","ajc_cancel26"], c:"high"}
+  ],
+  why:["m","f"], note:"The sprint's own last mile. The bus that served the front door is gone and the replacement is a 20-minute wait." },
+
+{ id:20, c:"t", w:2, n:"Berean Village seniors at the I-20 bridge, West View Place", ll:[33.740,-84.428],
+  h:"A senior building lost its bus stop in the April 2026 redesign. The replacement is a half-mile walk over an I-20 bridge on cracked sidewalk.",
+  who:"Older adults in Westview. Wheelchair users.",
+  ev:[
+    {t:"Residents told WSB-TV they are basically paralyzed after the stop closed in the April 2026 redesign. The nearest stop is a half mile away across the I-20 bridge.", s:["wsb_berean26"], c:"high"},
+    {t:"The redesign targeted a 70/30 split between ridership and coverage. MARTA reports 74,000 more people near frequent service and 6% more population served. The number of riders who lost a stop within a quarter or half mile was not published on any page read for this map.", s:["mt_nextgen25"], c:"high"}
+  ],
+  why:["m","f"], note:"Coverage was traded for frequency because there was not enough money for both. The trade landed on people who cannot walk the difference." },
+
+{ id:21, c:"t", w:1, n:"Niskey Lake Road and County Line Road: 16 stops closed", ll:[33.703,-84.503],
+  h:"Sixteen bus stops closed in 2023 because the street is too narrow for a bus. Some riders now walk more than a mile.",
+  who:"Southwest Atlanta residents who rode Route 183.",
+  ev:[
+    {t:"Sixteen stops on Niskey Lake Rd and County Line Rd closed April 22, 2023. MARTA said the street is too narrow for buses. Some riders walk more than a mile to the next stop.", s:["anf_niskey23"], c:"high"}
+  ],
+  why:["f"], note:"Streets built for cars only, served by buses anyway for years, then not." },
+
+{ id:22, c:"t", w:2, n:"H.E. Holmes station: the parking moat", ll:[33.7545,-84.4697],
+  h:"The west end of the Blue Line sits in 17 to 22 acres of parking with 1,436 spaces at 37% use and only 2,742 residents within a half mile.",
+  who:"West side riders walking in from Collier Heights and Adamsville across the lot and Hollowell Pkwy.",
+  ev:[
+    {t:"17 to 22 acres; 1,436 spaces at 37% use; 2,742 residents within a half mile (2012 data in MARTA's 2017 profile).", s:["marta_heh"], c:"high"},
+    {t:"Kensington: 41 acres, 1,962 spaces at 25% use. College Park: 29 acres, 2,056 spaces at 92%, with 856 residents within a half mile, down 35% from 2000 to 2012. Doraville: 14 acres, 1,257 spaces, and Norfolk Southern tracks that require a bridge for walkers to reach the former GM site.", s:["marta_kens","marta_cp","marta_dor"], c:"high"},
+    {t:"Brookings (2011): only 68.5% of metro Atlanta's zero-vehicle households had transit coverage, the worst of the 100 largest metros.", s:["brookings11"], c:"high"}
+  ],
+  why:["f","m"], note:"The 1979 park-and-ride assumption was never revisited. The station serves cars first and the neighborhood around it second." },
+
+{ id:23, c:"t", w:2, n:"Oakland City station: 33 years without an elevator", ll:[33.7170,-84.4251],
+  h:"A rail station that went 33 years without a platform elevator. The BeltLine link to it is due in 2028. The Campbellton bus rapid transit line that will end here is aiming for the same year.",
+  who:"Oakland City, Capitol View and Venetian Hills riders. Wheelchair users and parents with strollers.",
+  ev:[
+    {t:"As of Dec 2017 the station had no platform elevator 33 years after opening. MARTA promised one by summer 2018. Completion was not confirmed on any page read for this map.", s:["wsb_oakland17"], c:"high"},
+    {t:"On Oct 9, 2026, MARTA's status page listed Brookhaven Elevator 1 out of service with riders told to ride a bus to Chamblee, plus Airport Elevator 1 and Dunwoody Escalator 1 out. MARTA publishes no system-wide availability totals.", s:["marta_elev"], c:"high"},
+    {t:"A Vine City station escalator surge on July 14, 2025 injured at least nine people.", s:["anf_escalator25"], c:"high"},
+    {t:"The BeltLine Murphy Connector to Oakland City: 1.31 miles, due mid-2028.", s:["beltline_jun26"], c:"high"}
+  ],
+  why:["m","r"], note:"Vertical access is the last mile inside the station. It is funded last." },
+
+{ id:24, c:"t", w:2, n:"The Streetcar: a $99 million last-mile vehicle few ride", ll:[33.7560,-84.3800],
+  h:"Ridership fell from 880,083 in its free first year to about 300 weekday riders in early 2026. The $230 million eastward extension was pulled in 2025.",
+  who:"Downtown and Sweet Auburn. The mile between Centennial Olympic Park and the King Historic District.",
+  ev:[
+    {t:"880,083 trips in 2015 when the ride was free; 371,041 in 2016 after a $1 fare, with up to half of riders not paying. $99 million to build.", s:["ajc_streetcar17"], c:"high"},
+    {t:"About 218,500 trips in 2025 and about 300 weekday riders in the first quarter of 2026.", s:["wiki_streetcar"], c:"med"},
+    {t:"Streetcar East Extension to Ponce City Market: $230 million, at 30% design in 2024. In March 2025 the Dickens administration pulled it and moved rail priority to the Southside.", s:["fox5_streetcar24","acc_rail25"], c:"high"}
+  ],
+  why:["n","m"], note:"The one last-mile vehicle the city built runs a loop that does not reach where people need to go, and the extension that would have changed that lost a political fight." },
+
+{ id:25, c:"t", w:3, n:"The BeltLine rail fight at Irwin Street", ll:[33.7580,-84.3640],
+  h:"A 2016 sales tax earmarked about $235 million for BeltLine rail. A 2023 opposition group formed against the first segment. In 2025 the mayor pulled it. In Sept 2026 the council called for a $3.5 billion plan due in January 2027.",
+  who:"Eastside Trail users. The future riders of the 22-mile loop. Old Fourth Ward, Inman Park and Reynoldstown.",
+  ev:[
+    {t:"Better Atlanta Transit organized in Oct 2023 as a 501(c)(4) against the $230 million Irwin St to Ponce City Market extension. About 200 people, mostly opposed, attended a March 2024 Inman Park meeting. The mayor backed off rail-only in April 2024.", s:["axios_bat23","ajc_rail24","saporta_rail24"], c:"high"},
+    {t:"Sept 2026: a council resolution with nine sponsors called for 22 miles of BeltLine rail at $3.5 billion. The 2016 tax earmarked about $235 million for it. An implementation plan is due Jan 2027.", s:["rd_bond26"], c:"high"},
+    {t:"A 2024 city audit found the More MARTA fund was owed about $70 million after operating charges. MARTA disputed the finding.", s:["anf_audit24"], c:"high"},
+    {t:"BeltLine trail: 16.7 of 22 mainline miles open in June 2026; all land rights secured Oct 2026; completion target 2030.", s:["beltline_jun26","anf_beltline26"], c:"high"}
+  ],
+  why:["n","m","r"], note:"The loop was sold to voters with rail on it. Ten years later the rail is a resolution." },
+
+{ id:26, c:"t", w:2, n:"West Lake station: the night the scooters were banned", ll:[33.7530,-84.4474],
+  h:"Eric Amis Jr., 20, was killed on a rental scooter near here around midnight in May 2019, one of four riders killed that summer. The city answered with a 9 p.m. to 4 a.m. ban on the devices, the hours after the last train when shift workers need them most.",
+  who:"Night-shift and service workers. Residents of the three equity zones, which drew 8% of scooter trips.",
+  ev:[
+    {t:"Four rental-scooter riders were killed between May 16 and Aug 7, 2019: Eric Amis Jr. near West Lake station about midnight; Brad Alexander near Arts Center, run over by a CobbLinc bus; Amber Ford in Midtown, hit-and-run; Quienterry McGriff in East Point at 6:30 a.m.", s:["sb_scooter19"], c:"high"},
+    {t:"The 9 p.m. to 4 a.m. No Ride Zone took effect Aug 9, 2019 as an administrative action.", s:["rd_scooter19"], c:"high"},
+    {t:"Georgia Tech researchers used the ban as a natural experiment: commute times rose about 10% during ban hours, adding roughly 784,000 driver hours a year.", s:["gt_scooter22"], c:"high"},
+    {t:"The curfew was cut to midnight to 4 a.m. in Dec 2022. In Nov 2024 the council voted to cut it to 2 to 4 a.m., citing night-shift, hospitality and healthcare workers. ATLDOT's web page still listed midnight to 4 a.m. in late 2025.", s:["anf_curfew24","anf_curfew24b"], c:"med"},
+    {t:"The three equity zones drew 337,948 trips, 8% of the total, from Jan 2022 to May 2024. Citywide dockless trips reached 3.7 million in 2025. Relay bikeshare ended in Dec 2022 and the city has no docked bikeshare in 2026.", s:["atldot_micro24","axios_micro25","gt_micro26"], c:"high"},
+    {t:"Grady and Emory counted 380 scooter injury patients from June 2018 to Aug 2020; 41% had head injuries.", s:["ijerph21"], c:"high"}
+  ],
+  why:["n","f"], note:"A ban was the fastest available response to four deaths. It fell on the people with the fewest alternatives at those hours." },
+
+{ id:27, c:"v", w:3, n:"Auburn Avenue under the Downtown Connector", ll:[33.7555,-84.3810],
+  h:"The 1946 Lochner plan bent the expressway east through Sweet Auburn instead of the white downtown. The Connector opened in 1964 with no Auburn Avenue ramps. The cap to re-stitch it has $42.3 million committed and is unbuilt.",
+  who:"Sweet Auburn and the Old Fourth Ward. Everyone walking between downtown and the King district.",
+  ev:[
+    {t:"The Lochner highway plan, commissioned in 1944 and reported in 1946, recommended routing the north-south expressway through Sweet Auburn rather than the central business district.", s:["metropole21","gsu_diss15"], c:"high"},
+    {t:"The route was first drawn through the Atlanta Life Insurance headquarters. After 1956 protests it shifted a few blocks east, still through Auburn Ave.", s:["sbd_freeways","atlmag12"], c:"high"},
+    {t:"Completed in 1964 with no Auburn Ave ramps. The underpass split the avenue into east and west halves.", s:["metropole21"], c:"high"},
+    {t:"Displacement estimates for 1950s to 1970s highway and urban renewal clearance range from about 14,000 people (89% people of color, federal urban renewal only) to about 70,000 (about 95% Black).", s:["gt_pse17","metropole21"], c:"med"},
+    {t:"The Stitch would cap three-quarters of a mile and reconnect 11 streets. $42.3 million was committed as of 2024. Unbuilt.", s:["rd_stitch24"], c:"high"},
+    {t:"437,000 vehicles a day south of 10th St in 2015, forecast above 460,000 by 2040. Ten through lanes since the 1980s.", s:["gdot_connector"], c:"high"}
+  ],
+  why:["r","n"], note:"The routing was a political choice in 1946. The cap has been a plan since 2016." },
+
+{ id:28, c:"v", w:3, n:"I-20 West at Adamsville: the boundary road", ll:[33.754,-84.487],
+  h:"A 1960 city planning report described the I-20 West route as the boundary between white and Black communities. Mayor Hartsfield used the same framing in the 1950s. The High Injury Network still sits mostly south of I-20 and west of Northside Drive.",
+  who:"Adamsville, Collier Heights, West End and Westview. Anyone crossing I-20 on foot between Cascade and MLK.",
+  ev:[
+    {t:"A 1960 Atlanta Bureau of Planning report treated the I-20 West route as a racial boundary. Mayor Hartsfield framed it the same way in the 1950s.", s:["ahc_walls22","sbd_freeways"], c:"high"},
+    {t:"About two-thirds of the Vision Zero High Injury Network is south of I-20 or west of Northside Dr. More than two-thirds of the city's traffic deaths are in predominantly Black neighborhoods.", s:["axios_fatal25"], c:"med"},
+    {t:"In 2022, 25 of the city's 38 pedestrian deaths were in majority-Black neighborhoods. 63% were on roads without sidewalks, 38% on GDOT state routes, 29% were hit-and-run.", s:["saporta_ped23"], c:"high"},
+    {t:"Five-county region, 2024: 425 traffic deaths against 410 homicides. Majority-Black census tracts are 43% of the region's tracts and 61% of its traffic deaths.", s:["arc_q4_25","wabe_2024deaths"], c:"high"}
+  ],
+  why:["f","n"], note:"The line was drawn on purpose, then forgotten as a line. The crash map still traces it." },
+
+{ id:29, c:"v", w:2, n:"Peyton Road: the wall that came down and the seams that stayed", ll:[33.7306,-84.4631],
+  h:"In December 1962 the mayor ordered barricades across Peyton Road to keep Black homebuyers out of Cascade Heights. Detours ran up to five miles. The wall stood 72 days. Other streets were dead-ended by petition and never reconnected. Street names still change at the old racial lines.",
+  who:"Cascade Heights and Peyton Forest. Anyone walking a grid that was deliberately broken.",
+  ev:[
+    {t:"Ordered by Mayor Ivan Allen on Dec 17, 1962 after Dr. Clinton Warner bought a home in Cascade Heights. Detours of up to 5 miles. The barricade stood 72 days. Other Black-occupied streets were dead-ended after white petitions. Street names change where the racial lines ran.", s:["ahc_wall21","ahc_walls22"], c:"high"}
+  ],
+  why:["f"], note:"The dead ends are now just how the neighborhood is laid out. Nobody asks why the street stops." },
+
+{ id:30, c:"v", w:3, n:"Washington-Rawson, the stadium and the empty acres", ll:[33.735,-84.389],
+  h:"A 1957 clearance removed more than 3,000 homes and 154 businesses and left 600 empty acres. A stadium went on them in 1963. Peoplestown lost 60% of its residents and Mechanicsville more than 70% between 1960 and 1990.",
+  who:"Summerhill, Mechanicsville, Peoplestown and Pittsburgh.",
+  ev:[
+    {t:"The Washington-Rawson renewal project (1957) cleared more than 3,000 housing units and 154 businesses and left 600 empty acres across Summerhill, Peoplestown and Mechanicsville. The stadium was sited on them in 1963. From 1960 to 1990 Peoplestown lost 60% of its residents and Mechanicsville more than 70%.", s:["nation15"], c:"high"},
+    {t:"The blocks west of Capitol Ave went from about 12,000 residents in 1950 to 7,600 in 1960 to under 3,000 in 1970, and from 85% white to 95% Black.", s:["gsu_georgiaave"], c:"high"},
+    {t:"Peoplestown and Mechanicsville are now more than 60% impervious surface.", s:["nextcity16"], c:"med"},
+    {t:"MARTA's Rapid A-Line through Summerhill broke ground in June 2023, was promised for summer 2025, and opened April 18, 2026 on temporary stops. MARTA has not released ridership.", s:["wsbr_brt23","mt_aline26"], c:"high"}
+  ],
+  why:["r","n"], note:"The acres were emptied for a highway interchange and a ballpark. The neighborhoods around them have been rebuilt three times since and are still cut off from downtown by the interchange." },
+
+{ id:31, c:"v", w:2, n:"Freedom Park: the freeway the east side stopped", ll:[33.7673,-84.3560],
+  h:"I-485 and the Stone Mountain Tollway were announced in 1964 and 1958. The state razed 300 homes and cleared more than 200 acres before neighbors stopped both. The south and west sides had already been cut.",
+  who:"Inman Park, Poncey-Highland, the Old Fourth Ward, Virginia-Highland and Morningside.",
+  ev:[
+    {t:"I-485 was announced in Oct 1964. By 1970 the state had bought more than 1,000 parcels and razed 300 residences. An injunction followed on June 22, 1971. The council moved $70 million to MARTA on Dec 18, 1973. The road was de-mapped in 1975.", s:["mlpa03"], c:"high"},
+    {t:"The Great Speckled Bird reported in 1974 that about 600 homes had been cleared in the Inman Park and Little Five Points area before most residents knew. Wealthier Morningside used lawsuits; working-class Inman Park was cleared first.", s:["strip_i485"], c:"med"},
+    {t:"The Stone Mountain Tollway was planned in 1958. Governor Carter halted it in 1972. CAUTION formed in 1982 and the Roadbusters in 1985. Freedom Parkway opened in Sept 1994 on the stub. More than 200 acres cleared for the junction became Freedom Park.", s:["ksu_caution","atlmag_i485"], c:"med"}
+  ],
+  why:["n"], note:"The neighborhoods that could afford lawyers stopped their freeways in the 1970s. The ones that could not had theirs built in the 1950s and 1960s. Both outcomes were political." },
+
+{ id:32, c:"v", w:1, n:"Hulsey Yard and the Krog Street Tunnel", ll:[33.7546,-84.3635],
+  h:"A 70-acre rail yard separates four neighborhoods. A 1913 tunnel is their walking link.",
+  who:"Cabbagetown, Reynoldstown, Inman Park and Old Fourth Ward walkers. BeltLine users.",
+  ev:[
+    {t:"Hulsey Yard covers about 70 acres. The Krog Street Tunnel, built in 1913, is the pedestrian link among Cabbagetown, Reynoldstown, Inman Park and the Old Fourth Ward.", s:["rd_hulsey19"], c:"high"}
+  ],
+  why:["f"], note:"The tunnel is a landmark now. That it is the only way through is not discussed." },
+
+{ id:33, c:"v", w:2, n:"GA-400 at Lenox Road: Buckhead's own cut", ll:[33.847,-84.360],
+  h:"Land buying began in 1959. A judge blocked the road in January 1989 and the legislature overrode him 139 to 18 a month later. It opened in 1993 with a 50-cent toll. The half-mile cap and Lenox Road pedestrian bridge proposed to heal it are unbuilt.",
+  who:"North Buckhead, Lenox and Lindbergh walkers moving between the two sides of the freeway and the two rail stations.",
+  ev:[
+    {t:"Land purchases began in Jan 1959. The North Buckhead Civic Association formed in 1972. The council voted against the road in 1975. A judge blocked it on Jan 19, 1989. The legislature overrode him 139 to 18 on Feb 21, 1989 and the council approved 11 to 7 on May 15, 1989. It opened Aug 1, 1993 at $270 million with a 50-cent toll, which ended Nov 22, 2013.", s:["aaroads400","rd_400_13"], c:"med"},
+    {t:"HUB404: a half-mile cap over GA-400 and a Lenox Rd pedestrian bridge across the interchange, estimated at more than $200 million. Unbuilt.", s:["urbanize_hub404"], c:"high"}
+  ],
+  why:["r","n"], note:"The richest part of the city got a freeway through its middle anyway, and the cap to fix it has been a rendering for a decade." },
+
+{ id:34, c:"v", w:3, n:"Peachtree Road, Deering Rd to Pharr Rd: the 2015 veto", ll:[33.8265,-84.3863],
+  h:"GDOT proposed restriping Peachtree Road with bike lanes. More than 2,000 comments came in, over 70% opposed. GDOT dropped the lanes in December 2015. The same month the council removed Buckhead from the streetcar plan.",
+  who:"Anyone trying to move along Buckhead's spine without a car.",
+  ev:[
+    {t:"GDOT's Complete Streets restriping, Deering Rd to Pharr and Maple: two lanes each way plus a center turn lane and bike lanes to Peachtree Battle. GDOT cited a 25% crash drop after the Ponce de Leon road diet.", s:["rd_ptree_oct15"], c:"high"},
+    {t:"The Buckhead Council of Neighborhoods and the Buckhead Coalition opposed it. More than 2,000 comments, more than 70% against. On Dec 11, 2015 GDOT dropped the bike lanes and the Complete Streets element. The council passed a resolution thanking GDOT.", s:["rd_ptree_dec15","rd_ptree_dec15b"], c:"high"},
+    {t:"In 2017 the Buckhead CID moved its own Peachtree bike lanes to Maple Dr, citing $8 million in right-of-way and GDOT's withdrawal.", s:["rd_bcid17"], c:"high"},
+    {t:"In Dec 2015 the council removed Buckhead from the streetcar expansion plan after resident opposition.", s:["patch_streetcar15"], c:"med"},
+    {t:"Atlanta has built about 14 miles of protected bike lanes in the last five years. In 2016, 5.9 of 104 facility miles were protected or buffered. PeopleForBikes scored the city 33 out of 100 in 2026.", s:["ajc_bike26","atldot_bikeinv","axios_bike26"], c:"high"}
+  ],
+  why:["n"], note:"The most organized neighborhoods in the city used their organization to keep the street as it was." },
+
+{ id:35, c:"v", w:1, n:"Chantilly Drive at I-85: the contested bridge", ll:[33.831,-84.341],
+  h:"The one new crossing of I-85 proposed inside the Perimeter is a $23 million car bridge. The neighborhood on the other side objects: 13,000 vehicles a day onto streets that have no sidewalks.",
+  who:"LaVista Park (about 650 homes) and Lindridge-Martin Manor. Walkers with no crossing of I-85 between Cheshire Bridge Rd and Clairmont Rd.",
+  ev:[
+    {t:"The LaVista Park Civic Association opposes Brookhaven's proposed Southern Connector bridge over I-85, citing 13,000 vehicles a day and streets without sidewalks (Sept 2026).", s:["anf_bridge26"], c:"high"}
+  ],
+  why:["n","f"], note:"A contested case, not a clean one. The objection rests on a real gap: a bridge for cars into a neighborhood with no sidewalks." },
+
+{ id:36, c:"v", w:2, n:"Perry Homes and Proctor Creek", ll:[33.789,-84.451],
+  h:"1,100 public housing units were bulldozed in 1999 and the land sat vacant for 23 years. In 1967 residents were already writing the mayor about a footbridge over Proctor Creek to reach the park.",
+  who:"The west side. The Proctor Creek watershed: 127,418 people in 38 neighborhoods.",
+  ev:[
+    {t:"Perry Homes: 1,100 units, bulldozed in 1999, vacant for 23 years.", s:["saporta_perry22"], c:"high"},
+    {t:"1967 letters in the Ivan Allen mayoral records concern a footbridge over Proctor Creek to reach Gun Club Park. Whether it was built was not confirmed on any page read.", s:["gt_allen"], c:"med"},
+    {t:"Proctor Creek watershed: 28.6 square miles, 127,418 people, 38 neighborhoods. The health-impact study area was 82% Black with 62% of children in poverty. Hunter Hills homes flood repeatedly.", s:["epa_proctor","ajc_flood26"], c:"high"}
+  ],
+  why:["r"], note:"A 1967 request for a footbridge and a 1999 demolition, with 23 years of nothing in between." },
+
+{ id:37, c:"v", w:3, n:"The Perimeter itself: where the vote stops the train", ll:[33.8927,-84.2607],
+  h:"MARTA stops at the county line because voters outside it said no: Cobb in 1965, Clayton and Gwinnett in 1971, Gwinnett again in 1990, 2019 and 2020 (by 1,023 votes). The state has never funded MARTA operations.",
+  who:"Everyone inside the ring whose job, hospital or family is outside it. Everyone outside it who works inside.",
+  ev:[
+    {t:"1965: four of five counties plus the city approved MARTA; Cobb rejected it. 1968: a property-tax referendum failed, with the strongest opposition from Black Atlanta over unequal service and board seats.", s:["gf18","ga_enc_marta"], c:"high"},
+    {t:"1971: passed in Fulton (51%) and DeKalb (52%). Clayton 23% yes. Gwinnett 21% yes. Suburban opponents predicted integration, busing and public-housing dispersal.", s:["wiki_marta_hist","gf18","ga_enc_marta"], c:"med"},
+    {t:"Gwinnett 1990: 68,136 no, 28,828 yes. March 2019: 41,985 yes, 49,936 no. Nov 2020: 198,514 for, 199,537 against. Clayton joined MARTA in Nov 2014, 74 to 26.", s:["gf24","gdp19","cfte_clayton"], c:"high"},
+    {t:"The 1971 Maddox amendment barred MARTA from spending more than 50% of its sales tax on operations. The legislature suspended it permanently in April 2015. MARTA receives no state operating support.", s:["atlmag12","apn15","ga_enc_marta"], c:"high"},
+    {t:"The slur Moving Africans Rapidly Through Atlanta circulated in the suburbs for decades and was documented by Henderson in 2006.", s:["sb_usa17","atlmag12"], c:"high"}
+  ],
+  why:["n","m"], note:"The ring on this map is a political boundary first and a road second." },
+
+{ id:38, c:"e", w:3, n:"English Avenue and Vine City: the hottest, wettest ground", ll:[33.7695,-84.4110],
+  h:"English Avenue scores 10 of 10 on the city's heat vulnerability index. Many Westside tracts are under 80% air conditioned against 96% citywide. In 2002 a storm put raw sewage in the streets and the block sat empty for 19 years.",
+  who:"Westside residents walking to Ashby and Vine City stations. Children: the Fulton child asthma ER rate is 1,210 per 100,000.",
+  ev:[
+    {t:"The city's heat vulnerability assessment (249 neighborhoods, 2016 simulated surface temperatures) scored English Avenue 10 of 10, with Vine City, Pittsburgh, Castleberry Hill and Washington Park also high. The highest-risk residents are about 20% more likely to suffer heat illness. Some Westside areas are 80% air conditioned against 96% citywide.", s:["ajc_heat23"], c:"high"},
+    {t:"Heat Watch 2021 (Spelman and NOAA, 48,000 readings): the hottest areas averaged 14.5 degrees hotter than the coolest, with the hottest zones in and south of downtown, mostly historically Black neighborhoods.", s:["alive_heat21"], c:"med"},
+    {t:"Redlined areas have the lowest canopy and highest impervious cover. The 1938 HOLC map graded every Black neighborhood D.", s:["capb23","atlstudies17"], c:"high"},
+    {t:"Vine City, Sept 2002: a tropical storm overwhelmed the combined sewer; raw sewage in streets and homes; boat rescues. The block stayed vacant until Cook Park opened in 2021.", s:["ajc_flood26","wabe_cook"], c:"high"}
+  ],
+  why:["f","r"], note:"The 1938 map, the 2002 flood and the 2023 heat index describe the same blocks." },
+
+{ id:39, c:"e", w:2, n:"Pittsburgh: heat without air conditioning", ll:[33.7280,-84.4010],
+  h:"About 30% of homes lack central air in a neighborhood with one of the city's highest heat scores. The walk to West End station crosses some of the hottest readings in the 2023 mapping.",
+  who:"Pittsburgh and Mechanicsville residents. West End station riders.",
+  ev:[
+    {t:"About 30% of Pittsburgh homes lack central air conditioning. The neighborhood scores high on the city's heat vulnerability index.", s:["ajc_heat23"], c:"high"},
+    {t:"UrbanHeatATL recorded higher readings near West End MARTA and downtown. EPA: shaded surfaces run 20 to 45°F cooler than unshaded ones.", s:["fox5_heat23"], c:"med"},
+    {t:"Days at or above 90°F at Hartsfield: 72 in 2024, 58 in 2025, 76 through Oct 3, 2026. The 1991 to 2020 normal is 44. The 1970s averaged about 25. 2024 was the warmest year on record at 66.2°F.", s:["eww_90","nws_2024"], c:"med"},
+    {t:"Summer 2026 was the eighth warmest on record at 81.5°F. August 2026 averaged a high of 92.3°F with seven days at 95°F or above.", s:["anf_summer26"], c:"med"}
+  ],
+  why:["f","m"], note:"The heat is new in degree, not in kind. The homes without air conditioning are the same homes that were cheap because of the 1938 map." },
+
+{ id:40, c:"e", w:2, n:"Peoplestown: the block the city bought", ll:[33.7290,-84.3855],
+  h:"Flooding began after the 1996 Olympic paving. A 2012 sewage flood led to eminent domain. The last four holdouts were bought out for more than $6.3 million in 2022.",
+  who:"Peoplestown and Summerhill. Walkers on Atlanta Ave and Ormond St.",
+  ev:[
+    {t:"Flooding began after the 1996 Olympic paving. A 2012 sewage flood followed. The city used eminent domain to clear a block at Atlanta Ave and Ormond St. The council approved buyouts of more than $6.3 million for the last four homes on Aug 15, 2022.", s:["wsb_peoplestown22"], c:"high"},
+    {t:"The combined sewer covers about 13 square miles of the core. The 1998 consent decree program now exceeds $3 billion with a remaining deadline of 2027.", s:["cwa_history"], c:"high"},
+    {t:"Peoplestown and Mechanicsville are more than 60% impervious.", s:["nextcity16"], c:"med"}
+  ],
+  why:["r","m"], note:"The city's fix for a neighborhood that floods was to buy the part that floods." },
+
+{ id:41, c:"e", w:2, n:"Peachtree Creek at Peachtree Battle: the creek nobody crosses on foot", ll:[33.8148,-84.4080],
+  h:"Helene dropped 11.2 inches in 48 hours in Sept 2024 and put 20 or more water rescues in Peachtree Battle. In 2009 the creek crested at 23.89 feet against a 17-foot flood stage. The BeltLine's bridge over the creek is unbuilt until 2028.",
+  who:"Buckhead, Collier Hills and Peachtree Hills walkers. Users of the five-foot sidewalk on the Northside Dr bridge.",
+  ev:[
+    {t:"Helene, Sept 26 to 27, 2024: 11.2 inches in 48 hours at Hartsfield, beating the 9.59-inch record from 1886. More than 20 water rescues in Peachtree Battle, a boat rescue at Peachtree Park Apartments, Woodward Way flooded.", s:["wabe_helene24","rd_helene24"], c:"high"},
+    {t:"Sept 2009: Peachtree Creek crested at 23.89 feet (flood stage 17). About 20,000 buildings damaged across the region, $250 to 300 million.", s:["nws_2009"], c:"high"},
+    {t:"The Northside Dr bridge over Peachtree Creek (1926) was replaced around 2020. It carries 15,900 vehicles a day. Residents fought the removal of the barrier between the five-foot sidewalk and traffic.", s:["rd_northside18"], c:"high"},
+    {t:"BeltLine Northwest Trail Segment 1 (0.8 miles, including the Peachtree Creek crossing) is due mid-2028.", s:["beltline_jun26"], c:"high"}
+  ],
+  why:["f","r"], note:"The creek is a barrier and a flood at once, in the part of the city with the most money to fix either." },
+
+{ id:42, c:"e", w:2, n:"Downtown: the canopy floor", ll:[33.755,-84.390],
+  h:"Downtown had 3% tree canopy in 2008 and 9.2% in 2023. Citywide canopy fell from 47.9% to 45.7% in the same span, about 0.43 acres a day, while the council pared back the tree ordinance in 2025. In the city, 7.5% of bus stops have a shelter.",
+  who:"Downtown and Georgia State walkers. The Oakland neighborhood, at 3%, has the least canopy in the city.",
+  ev:[
+    {t:"Canopy: 47.9% (2008), 47.1% (2014), 46.5% (2018), 45.7% (2023). About 780 acres lost from 2018 to 2023, and the loss rate is rising. Downtown rose from 3% to 9.2%. Oakland is 3%, Boulder Park 84%. Multifamily development is now the leading driver of loss.", s:["gt_canopy23","treesatl"], c:"high"},
+    {t:"The tree ordinance rewrite advanced 4 to 1 in June 2025 after developer objections. Preservation standards were dropped. Fees of $140 per diameter inch. Effective Jan 2026.", s:["ajc_tree25"], c:"high"},
+    {t:"Bus shelters: 8,949 MARTA stops and 916 shelters (about 10%) in 2021. In the city, 3,752 stops and 282 shelters (7.5%). A city ordinance capping shelters at 300 was repealed in June 2021.", s:["saporta_shelter21"], c:"high"},
+    {t:"MARTA Army's census of more than 3,200 stops: 12% have a shelter, 19% seating, 25% no paved sidewalk, 58% no crosswalk within 100 feet. Propel ATL's 2024 survey of 900 riders: 77% of stops lack a bench or shelter.", s:["martaarmy","axios_propel25"], c:"high"}
+  ],
+  why:["n","m"], note:"Shade is the last-mile climate infrastructure. The city capped bus shelters by ordinance until 2021 and loosened tree protection in 2025." },
+
+{ id:43, c:"e", w:2, n:"The Connector at 10th Street: breathing next to 437,000 cars", ll:[33.781,-84.388],
+  h:"Georgia Tech dorms sit 20 meters from a freeway carrying 437,000 vehicles a day. Metro Atlanta's ozone grade fell to F in 2026. DeKalb has the highest child asthma ER rate in Georgia.",
+  who:"Georgia Tech students. Midtown and Home Park walkers. Children in Fulton and DeKalb.",
+  ev:[
+    {t:"437,000 vehicles a day south of 10th St (2015 count). Ten through lanes since the 1980s.", s:["gdot_connector"], c:"high"},
+    {t:"The DRIVE study (2014 data) compared a dormitory 20 meters from the highway with one 1.4 km away and tied traffic pollutants to oxidative-stress and inflammation markers in students.", s:["hei18"], c:"high"},
+    {t:"American Lung Association 2026 (2022 to 2024 data): metro ozone grade F, 43rd worst of 226 metros; Fulton F; annual particle pollution failing, 38th worst of 211. The 2024 report had the metro at 67th.", s:["ala26","ala24"], c:"high"},
+    {t:"Child asthma emergency visits: Fulton 1,210 per 100,000, DeKalb 1,433 per 100,000, the highest in the state. Black children 1,800 against 445 for white children statewide (2018).", s:["dph_child"], c:"high"}
+  ],
+  why:["f"], note:"The widest road in the city runs through its densest walking district, and the air is getting worse again after the pandemic dip." }
+];
+
+/* Patterns: travel patterns the city has never addressed. Each cites site ids. */
+const PATTERNS = [
+  { n:"The walk to the stop", sites:[8,6,20,42,22],
+    f:[["81.2% of regional transit trips start on foot, 87% for households under $75,000.","arc_survey19"],
+       ["Only 16% of regional residents live within a five-minute walk of a transit stop. Half of all walking trips are under three-quarters of a mile.","arc_wbt"],
+       ["58% of MARTA stops have no crosswalk within 100 feet. 25% have no paved sidewalk. 12% have a shelter.","martaarmy"],
+       ["59% of regional pedestrian deaths in 2024 were within an eighth of a mile of a bus stop.","arc_q4_25"],
+       ["MARTA says it installed 1,000 stop amenities over five years and that 70% of customers board at a sheltered stop. That figure is weighted by riders, not stops.","mt_amenities24"]] },
+  { n:"The crossing of a state road", sites:[1,2,3,4,6,7,8],
+    f:[["38% of the city's 2022 pedestrian and bike crashes were on GDOT state routes.","saporta_ped23"],
+       ["17 of the 33 fatal crashes the city reviewed in 2024 were on GDOT-owned roads.","fcrc_24"],
+       ["The Vision Zero plan can rank a state route but cannot redesign it.","axios_moreland25"],
+       ["Atlanta had no transportation department at all until 2019; before that, roads were split among Public Works, City Planning and Renew Atlanta.","rd_atldot19"]] },
+  { n:"The shift that ends after the last train", sites:[18,26,4,10],
+    f:[["Rail ends at 1 a.m. Weekend buses end at 12:30 a.m. Headways stretch to 20 minutes after 7 p.m.","marta_howto"],
+       ["63,000 airport workers. MARTA's hours miss early and late shifts.","nasem24"],
+       ["82% of Georgia's 279 pedestrian deaths in 2020 happened after dark; 81% at non-intersections.","gohs20"],
+       ["Georgia pedestrian deaths: 311 in 2023, 280 preliminary in 2024. Nationally, 76.9% of pedestrian deaths happen in the dark and 63.4% on non-freeway arterials.","ghsa25"],
+       ["A 2022 city audit found 12% of streetlights not working.","wsb_lights"],
+       ["The earliest sunset is 5:29 p.m. on Dec 3. Dec 21 has 9 hours 55 minutes of daylight.","sunrise"]] },
+  { n:"The reverse commute", sites:[22,37,17],
+    f:[["90% of the region's major job centers are north of I-20. The city's share of regional jobs fell from 40% in 1980 to 19% in 1997.","gt_pse17"],
+       ["64% of metro jobs are more than 10 miles from downtown. Suburban transit users can reach 17% of jobs within 90 minutes.","ajc_jobs13"],
+       ["A 45-minute transit trip reached about 23,885 jobs, about 1% of the region's, before the pandemic.","atl_jobaccess22"],
+       ["68.5% of metro zero-vehicle households had transit coverage in 2011, the worst of 100 metros.","brookings11"],
+       ["Drive-alone commuting in the region: 81.6% in 2025, up from 79.7% in 2019. Average commute 18.5 miles and 34.6 minutes. Bus as a primary commute mode: 0.4%.","arc_rcs26"]] },
+  { n:"The immigrant main street", sites:[1,9],
+    f:[["Doraville: 45.1% foreign-born, 70.3% speaking a language other than English at home.","census_doraville"],
+       ["154 pedestrians struck on the DeKalb stretch of Buford Hwy since 2003, as of 2016.","usdot16"],
+       ["Seven jurisdictions share the corridor. One plan across them was the stated goal of a 2023 federal grant pitch.","arc_doraville23"]] },
+  { n:"The wheelchair, the stroller, the walker", sites:[12,23,11,20],
+    f:[["4,237 missing curb ramps. A self-score of 54 out of 100. A 2049 deadline.","anf_ada25"],
+       ["MARTA Mobility: $4 a trip, a three-quarter-mile corridor around fixed routes, same hours as fixed routes, in-person assessment required.","marta_mobility"],
+       ["About 64,000 Mobility trips a month. The reservation line answered 82 to 84% of calls with average waits of 13 to 18 minutes (spring 2026).","marta_access26"],
+       ["4,500 of 38,000 reduced-fare Breeze cards came back undeliverable in the 2026 fare-system cutover; seniors waited about two hours at headquarters.","acc_breeze26"]] },
+  { n:"The heat at the stop and the water in the street", sites:[38,39,40,41,42,43],
+    f:[["14.5 degrees between the hottest and coolest zones in the 2021 heat mapping.","alive_heat21"],
+       ["76 days at or above 90°F in 2026 through Oct 3, against a normal of 44.","eww_90"],
+       ["7.5% of the city's bus stops have a shelter (2021).","saporta_shelter21"],
+       ["Canopy fell from 47.9% to 45.7% between 2008 and 2023.","gt_canopy23"],
+       ["Metro ozone grade F in 2026, down from a C for Fulton in 2024.","ala26"]] },
+  { n:"The grid that was cut on purpose", sites:[27,28,29,30,31,33,37],
+    f:[["1946: the Lochner plan routes the expressway through Sweet Auburn.","metropole21"],
+       ["1960: a city planning report calls I-20 West the boundary between white and Black communities.","ahc_walls22"],
+       ["1962: the Peyton Road wall.","ahc_wall21"],
+       ["1975: I-485 de-mapped after the east side organized. 1993: GA-400 opens through Buckhead over a judge's ruling.","mlpa03"],
+       ["2020: Gwinnett rejects MARTA by 1,023 votes.","gf24"]] },
+  { n:"The student's last mile", sites:[19,26,43,5],
+    f:[["Georgia State: 53,000 students. Georgia Tech: 56,000. SCAD: 17,000 across campuses. Spelman: 2,700. Morehouse: 2,200.",["gsu_about","gt_about","scad_facts","spelman","morehouse"]],
+       ["Route 40, the Peachtree Street bus past SCAD Atlanta, was removed in April 2026.","humantransit26"],
+       ["In Aug 2026 Bird and Lime geofenced downtown to block a planned scooter takeover, cutting off ordinary riders with it.","anf_geofence26"],
+       ["Walk Score: Georgia State 96, Midwest Cascade 3.","walkscore"]] },
+  { n:"The money that went elsewhere", sites:[12,15,25,19,7],
+    f:[["ATLDOT's budget was cut 12% in FY2025, from about $57 million to $50 million.","rd_vz24"],
+       ["DeKalb spent $2.19 million of a $16.76 million sidewalk promise by Jan 2025.","dekalb_splost_status"],
+       ["A 2024 audit found the More MARTA expansion fund owed about $70 million.","anf_audit24"],
+       ["MARTA's 2024 ridership was 56% of 2019: 65.6 million trips against 117.8 million.",["ntd24","ntd19"]],
+       ["The 1971 Maddox amendment capped MARTA operating spending at 50% of its sales tax until 2015.","apn15"]] }
+];
+
+/* Stat tiles. v: value, l: label, s: source id, y: data year */
+const NUMBERS = [
+  {v:"56%", l:"of Atlanta street miles have no sidewalk on either side", s:"atp_appx", y:"c. 2016"},
+  {v:"73%", l:"of serious and fatal crashes happen on under 10% of streets", s:"vz_plan", y:"2017 to 2021"},
+  {v:"11.2%", l:"pedestrians' share of deaths and serious injuries, against 1.3% of crashes", s:"vz_plan", y:"2017 to 2021"},
+  {v:"59%", l:"of regional pedestrian deaths within an eighth of a mile of a bus stop", s:"arc_q4_25", y:"2024"},
+  {v:"58%", l:"of MARTA stops with no crosswalk within 100 feet", s:"martaarmy", y:"2020"},
+  {v:"7.5%", l:"of city bus stops with a shelter", s:"saporta_shelter21", y:"2021"},
+  {v:"1 a.m.", l:"last MARTA train, with 20-minute headways after 7 p.m.", s:"marta_sched", y:"2026"},
+  {v:"56%", l:"MARTA's 2024 ridership as a share of 2019", s:"ntd24", y:"2024"},
+  {v:"72.8%", l:"bus on-time performance against a 78.5% target", s:"marta_otp", y:"May 2026"},
+  {v:"4,237", l:"missing curb ramps; ADA self-score 54 of 100; deadline 2049", s:"anf_ada25", y:"2025"},
+  {v:"38 / 25", l:"city pedestrian deaths in 2022 and 2024", s:["saporta_ped23","arc_q4_25"], y:"2022, 2024"},
+  {v:"425", l:"regional traffic deaths in 2024, against 410 homicides; 61% in majority-Black tracts", s:"arc_q4_25", y:"2024"},
+  {v:"2.8", l:"metro pedestrian deaths per 100,000 a year; rank 32 of 101 metros; Georgia 9th of 50 states", s:"sga26", y:"2020 to 2024"},
+  {v:"82%", l:"of Georgia pedestrian deaths after dark", s:"gohs20", y:"2020"},
+  {v:"14.5°", l:"between Atlanta's hottest and coolest zones", s:"alive_heat21", y:"2021"},
+  {v:"76", l:"days at or above 90°F through Oct 3, against a normal of 44", s:"eww_90", y:"2026"},
+  {v:"45.7%", l:"tree canopy, down from 47.9% in 2008", s:"gt_canopy23", y:"2023"},
+  {v:"437,000", l:"vehicles a day on the Downtown Connector", s:"gdot_connector", y:"2015"},
+  {v:"63,000", l:"airport employees, with no transit to the cargo side", s:"atl_about", y:"2026"},
+  {v:"$1 to 2B", l:"sidewalk backlog estimates; $1.6M settlement; $0 construction money", s:"propel_sidewalk26", y:"2026"},
+  {v:"0.5786", l:"Gini index, the highest income inequality of any US city over 100,000", s:"ajc_gini22", y:"2016 to 2020"},
+  {v:"1,023", l:"votes by which Gwinnett rejected MARTA in 2020", s:"gf24", y:"2020"}
+];
+
+/* Timeline. y: year, t: text, sites */
+const TIMELINE = [
+  [1938,"The HOLC map grades every Black neighborhood in Atlanta D.",[38]],
+  [1946,"The Lochner plan recommends routing the expressway through Sweet Auburn.",[27]],
+  [1957,"Washington-Rawson clearance: 3,000 homes, 154 businesses, 600 empty acres.",[30]],
+  [1958,"The Stone Mountain Tollway is planned through the east side.",[31]],
+  [1959,"The state begins buying land for GA-400 through Buckhead.",[33]],
+  [1960,"A city planning report calls the I-20 West route a racial boundary.",[28]],
+  [1962,"The Peyton Road wall goes up for 72 days.",[29]],
+  [1964,"The Downtown Connector opens with no Auburn Avenue ramps. I-485 is announced.",[27,31]],
+  [1965,"Cobb County voters reject MARTA.",[37]],
+  [1967,"Perry Homes residents write the mayor about a footbridge over Proctor Creek.",[36]],
+  [1971,"MARTA passes in Fulton and DeKalb; Clayton and Gwinnett vote no. The Maddox amendment caps operating spending.",[37]],
+  [1975,"I-485 is de-mapped after the east side organizes.",[31]],
+  [1989,"The legislature overrides a judge to build GA-400.",[33]],
+  [1990,"Gwinnett votes no on MARTA, 68,136 to 28,828.",[37]],
+  [1993,"GA-400 opens with a 50-cent toll.",[33]],
+  [1996,"Olympic paving; Peoplestown flooding begins.",[40]],
+  [1998,"The combined-sewer consent decree.",[40]],
+  [1999,"Perry Homes is bulldozed; the land stays empty 23 years.",[36]],
+  [2002,"A storm puts raw sewage in Vine City streets.",[38]],
+  [2009,"Peachtree Creek crests at 23.89 feet. The city signs a DOJ settlement on curb ramps.",[41,12]],
+  [2010,"A city audit recommends $15 million a year for sidewalks against a $0.42 million budget.",[12]],
+  [2012,"The regional T-SPLOST fails; the Clifton rail line loses its funding path.",[17]],
+  [2014,"Clayton County joins MARTA, 74 to 26.",[37]],
+  [2015,"GDOT drops the Peachtree Road bike lanes. The council removes Buckhead from the streetcar plan. The Maddox amendment is suspended.",[34,37]],
+  [2016,"Atlanta voters approve the More MARTA half-penny. Relay bikeshare launches.",[25,26]],
+  [2017,"The Westview Drive bike lane is removed without notice.",[13]],
+  [2018,"Lawson v. City of Atlanta is filed. The More MARTA project list is adopted with $350 million for Clifton light rail.",[12,17]],
+  [2019,"ATLDOT is created. Four scooter riders are killed; the 9 p.m. to 4 a.m. ban follows. Gwinnett votes no.",[26,37]],
+  [2020,"Gwinnett votes no by 1,023 votes. Atlanta adopts Vision Zero.",[37]],
+  [2021,"100 people die on Atlanta streets. The 300-shelter cap is repealed. Heat Watch maps a 14.5 degree spread.",[42,38]],
+  [2022,"38 pedestrians are killed in the city, 25 in majority-Black neighborhoods. Relay bikeshare ends. Peoplestown buyouts approved.",[28,26,40]],
+  [2023,"Clifton light rail becomes BRT. The ADA suit settles for $1.6 million. Better Atlanta Transit forms. Sixteen stops close on Niskey Lake Road.",[17,12,25,21]],
+  [2024,"A hit-and-run death on Buford Highway. Helene drops 11.2 inches. A city audit finds $70 million owed to More MARTA.",[1,41,25]],
+  [2025,"GDOT finishes the Buford Highway median. The mayor pulls the Eastside streetcar extension. The tree ordinance is pared back. The ADA self-score is 54.",[1,24,42,12]],
+  [2026,"NextGen launches and Route 40 disappears. The A-Line opens on temporary stops. Clifton gets a Lindbergh terminus. The council calls for $3.5 billion in BeltLine rail. 76 days above 90°F by Oct 3.",[19,30,17,25,39]]
+];
+
+/* Gaps: what could not be found. Findings in themselves. */
+const GAPS = [
+  "An Atlanta-only share of pedestrian deaths in the dark. The city's crash review logs the hour but not the lighting.",
+  "Any measured air or surface temperature at an Atlanta bus stop.",
+  "The number of riders who lost a stop within a quarter or half mile in the April 2026 bus redesign, and the Title VI equity findings.",
+  "MARTA's share of riders with no car available. The 2019 regional survey did not ask.",
+  "A neighborhood-level map of zero-vehicle households. The Census API now requires a key and the public tables would not load. Older figures put the city at about 15 to 16% of households.",
+  "Current crossing spacing on Buford Highway after the 2025 median project.",
+  "DeKalb County's total sidewalk mileage and backlog.",
+  "How many miles of sidewalk ATLDOT builds in a year.",
+  "A full-year 2025 count of city pedestrian deaths. The Nov 2025 briefing said deaths were down 20% on all roads but flat on surface streets.",
+  "Whether the Oakland City elevator promised for 2018 was built, and the scooter curfew hours actually enforced today.",
+  "Any reporting on how hospital shift workers at Grady, Emory, Piedmont or Northside get home after 1 a.m."
+];
+
+/* Base map geometry (schematic). [lat,lng]. Approximate, hand-placed from known interchanges. */
+const GEO = {
+  ring:[[33.9215,-84.3490],[33.9195,-84.3780],[33.9130,-84.4200],[33.9095,-84.4420],[33.9055,-84.4680],[33.8900,-84.4720],[33.8650,-84.4760],[33.8400,-84.4870],[33.8150,-84.4950],[33.7870,-84.5040],[33.7556,-84.5159],[33.7300,-84.5130],[33.7161,-84.5106],[33.6950,-84.5030],[33.6650,-84.4870],[33.6490,-84.4570],[33.6400,-84.4250],[33.6420,-84.3950],[33.6540,-84.3680],[33.6700,-84.3350],[33.6830,-84.3000],[33.6975,-84.2745],[33.7200,-84.2450],[33.7545,-84.2338],[33.7850,-84.2300],[33.8200,-84.2330],[33.8550,-84.2370],[33.8780,-84.2460],[33.8927,-84.2607],[33.9050,-84.2700],[33.9115,-84.2765],[33.9160,-84.2950],[33.9215,-84.3490]],
+  roads:{
+    "Downtown Connector":[[33.8085,-84.3955],[33.8000,-84.3920],[33.7900,-84.3885],[33.7812,-84.3878],[33.7715,-84.3850],[33.7640,-84.3800],[33.7555,-84.3805],[33.7490,-84.3835],[33.7400,-84.3890],[33.7300,-84.3920],[33.7215,-84.3930]],
+    "I-75 south":[[33.7215,-84.3930],[33.7100,-84.3950],[33.6980,-84.3990],[33.6800,-84.4000],[33.6600,-84.3970],[33.6420,-84.3950]],
+    "I-85 south":[[33.7215,-84.3930],[33.7130,-84.4030],[33.7050,-84.4150],[33.6950,-84.4280],[33.6800,-84.4400],[33.6650,-84.4500],[33.6490,-84.4570]],
+    "I-75 north":[[33.8085,-84.3955],[33.8160,-84.4050],[33.8225,-84.4125],[33.8320,-84.4220],[33.8460,-84.4350],[33.8565,-84.4420],[33.8700,-84.4500],[33.8850,-84.4600],[33.9055,-84.4680]],
+    "I-85 north":[[33.8085,-84.3955],[33.8150,-84.3800],[33.8225,-84.3630],[33.8300,-84.3500],[33.8400,-84.3330],[33.8470,-84.3175],[33.8600,-84.3000],[33.8745,-84.2830],[33.8927,-84.2607]],
+    "I-20":[[33.7556,-84.5159],[33.7520,-84.4950],[33.7510,-84.4780],[33.7450,-84.4500],[33.7400,-84.4280],[33.7395,-84.4190],[33.7400,-84.4140],[33.7395,-84.4015],[33.7400,-84.3890],[33.7400,-84.3715],[33.7405,-84.3490],[33.7400,-84.3300],[33.7390,-84.3160],[33.7405,-84.2905],[33.7445,-84.2745],[33.7490,-84.2520],[33.7545,-84.2338]],
+    "GA-400":[[33.8225,-84.3630],[33.8305,-84.3640],[33.8450,-84.3620],[33.8650,-84.3600],[33.8850,-84.3570],[33.9035,-84.3560],[33.9215,-84.3490]],
+    "Freedom Pkwy":[[33.7640,-84.3800],[33.7675,-84.3715],[33.7670,-84.3560],[33.7730,-84.3495]]
+  },
+  river:[[33.9637,-84.3909],[33.9400,-84.4150],[33.9168,-84.4415],[33.8963,-84.4394],[33.8850,-84.4481],[33.8741,-84.4493],[33.8623,-84.4488],[33.8480,-84.4524],[33.8370,-84.4606],[33.8250,-84.4750],[33.8120,-84.4900],[33.8000,-84.5100],[33.7900,-84.5250],[33.7811,-84.5380]],
+  rail:{
+    redgold:{c:"#C8102E", pts:[[33.6407,-84.4463],[33.6513,-84.4490],[33.6767,-84.4406],[33.7004,-84.4290],[33.7170,-84.4251],[33.7358,-84.4134],[33.7484,-84.3955],[33.7537,-84.3917],[33.7593,-84.3875],[33.7663,-84.3874],[33.7717,-84.3869],[33.7809,-84.3863],[33.7891,-84.3872],[33.8232,-84.3692]]},
+    red:{c:"#C8102E", pts:[[33.8232,-84.3692],[33.8477,-84.3671],[33.9106,-84.3516],[33.9212,-84.3440]]},
+    gold:{c:"#C9A227", pts:[[33.8232,-84.3692],[33.8458,-84.3573],[33.8598,-84.3395],[33.8877,-84.3056],[33.9026,-84.2802]]},
+    bluegreen:{c:"#1F5FBF", pts:[[33.7563,-84.4175],[33.7566,-84.4044],[33.7568,-84.3968],[33.7537,-84.3917],[33.7498,-84.3858],[33.7499,-84.3756],[33.7571,-84.3523],[33.7619,-84.3399],[33.7651,-84.3121],[33.7748,-84.2957],[33.7754,-84.2808],[33.7723,-84.2516],[33.7690,-84.2294]]},
+    blue:{c:"#1F5FBF", pts:[[33.7563,-84.4175],[33.7530,-84.4474],[33.7545,-84.4697]]},
+    green:{c:"#2E8B57", pts:[[33.7563,-84.4175],[33.7723,-84.4284]]}
+  },
+  stations:[["Airport",33.6407,-84.4463],["College Park",33.6513,-84.4490],["East Point",33.6767,-84.4406],["Lakewood",33.7004,-84.4290],["Oakland City",33.7170,-84.4251],["West End",33.7358,-84.4134],["Garnett",33.7484,-84.3955],["Five Points",33.7537,-84.3917],["Peachtree Center",33.7593,-84.3875],["Civic Center",33.7663,-84.3874],["North Ave",33.7717,-84.3869],["Midtown",33.7809,-84.3863],["Arts Center",33.7891,-84.3872],["Lindbergh",33.8232,-84.3692],["Buckhead",33.8477,-84.3671],["Medical Center",33.9106,-84.3516],["Dunwoody",33.9212,-84.3440],["Lenox",33.8458,-84.3573],["Brookhaven",33.8598,-84.3395],["Chamblee",33.8877,-84.3056],["Doraville",33.9026,-84.2802],["H.E. Holmes",33.7545,-84.4697],["West Lake",33.7530,-84.4474],["Ashby",33.7563,-84.4175],["Vine City",33.7566,-84.4044],["GWCC",33.7568,-84.3968],["Georgia State",33.7498,-84.3858],["King Memorial",33.7499,-84.3756],["Inman Park",33.7571,-84.3523],["Edgewood",33.7619,-84.3399],["East Lake",33.7651,-84.3121],["Decatur",33.7748,-84.2957],["Avondale",33.7754,-84.2808],["Kensington",33.7723,-84.2516],["Indian Creek",33.7690,-84.2294],["Bankhead",33.7723,-84.4284]],
+  labels:[["DOWNTOWN",33.7445,-84.4035,1],["MIDTOWN",33.7855,-84.3745,1],["BUCKHEAD",33.8580,-84.3920,1],["SANDY SPRINGS",33.9370,-84.3950,1],["PERIMETER CENTER",33.9300,-84.3350,1],["DORAVILLE",33.9080,-84.2930,1],["CHAMBLEE",33.8900,-84.3180,1],["BROOKHAVEN",33.8700,-84.3450,1],["EMORY",33.8050,-84.3300,1],["DECATUR",33.7820,-84.2960,1],["EAST ATLANTA",33.7380,-84.3430,1],["WEST END",33.7335,-84.4215,1],["BANKHEAD",33.7820,-84.4400,1],["COLLIER HEIGHTS",33.7680,-84.4780,1],["CASCADE",33.7220,-84.4780,1],["EAST POINT",33.6780,-84.4470,1],["COLLEGE PARK",33.6550,-84.4600,1],["AIRPORT",33.6290,-84.4280,1],["LAKEWOOD",33.7080,-84.3850,1],["CANDLER-McAFEE",33.7460,-84.2720,1],["GRESHAM PARK",33.7130,-84.3250,1],["KIRKWOOD",33.7540,-84.3230,2],["GRANT PARK",33.7370,-84.3700,2],["VINE CITY",33.7590,-84.4080,2],["OLD FOURTH WARD",33.7680,-84.3700,2],["SUMMERHILL",33.7330,-84.3870,2],["PITTSBURGH",33.7220,-84.3980,2],["SWEET AUBURN",33.7555,-84.3760,2],["ENGLISH AVENUE",33.7730,-84.4130,2],["INMAN PARK",33.7600,-84.3560,2],["LITTLE FIVE POINTS",33.7650,-84.3500,2],["PEOPLESTOWN",33.7300,-84.3820,2],["CAPITOL VIEW",33.7200,-84.4200,2],["OAKLAND CITY",33.7150,-84.4300,2],["ADAMSVILLE",33.7580,-84.4950,2],["PEACHTREE HILLS",33.8200,-84.3800,2],["MORNINGSIDE",33.7950,-84.3560,2],["VIRGINIA-HIGHLAND",33.7800,-84.3600,2],["DRUID HILLS",33.7850,-84.3300,2],["CABBAGETOWN",33.7500,-84.3650,2],["REYNOLDSTOWN",33.7480,-84.3560,2],["MECHANICSVILLE",33.7360,-84.3990,2],["WESTVIEW",33.7400,-84.4360,2],["BELVEDERE PARK",33.7400,-84.2660,2]],
+
+  roadLabels:[["I-285",33.9215,-84.3490],["I-285",33.7545,-84.2338],["I-285",33.6400,-84.4250],["I-285",33.7556,-84.5159],["I-20",33.7450,-84.4500],["I-20",33.7405,-84.2905],["I-75",33.8565,-84.4420],["I-85",33.8600,-84.3000],["I-75",33.6800,-84.4000],["I-85",33.6950,-84.4280],["GA-400",33.8650,-84.3600],["Connector",33.7760,-84.3930]]
+};
+
+</script>
+<script>
+(function(){
+  const $=(s,el)=>(el||document).querySelector(s);
+  const byId={}; SITES.forEach(s=>byId[s.id]=s);
+  const catKeys=Object.keys(CAT), whyKeys=Object.keys(WHY);
+  const state={cats:new Set(catKeys), why:null, sel:null, mode:"streets"};
+  const sizes={1:22,2:27,3:32};
+  const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const srcLink=k=>{const r=SRC[k]; if(!r) return ""; return '<a href="'+esc(r[1])+'" target="_blank" rel="noopener">'+esc(r[0])+'</a>';};
+  const sref=id=>{const s=byId[id]; return s?'<button type="button" class="sref" data-go="'+id+'" style="--c:var(--c'+s.c+');--ink:var(--c'+s.c+'-ink)" title="'+esc(s.n)+'">'+id+'</button>':"";};
+  document.querySelectorAll("#sitecount,.sitecount").forEach(el=>el.textContent=SITES.length);
+
+  /* ---------- map ---------- */
+  const map=L.map("map",{zoomControl:true,scrollWheelZoom:false,attributionControl:true,minZoom:9.5,maxZoom:17,zoomSnap:0.25});
+  map.attributionControl.setPrefix("");
+  const HOME=[[33.63,-84.53],[33.93,-84.22]];
+  map.fitBounds(HOME);
+  map.on("focus click",()=>map.scrollWheelZoom.enable());
+  map.on("mouseout blur",()=>map.scrollWheelZoom.disable());
+
+  const isDark=()=>document.documentElement.getAttribute("data-theme")==="dark"||(document.documentElement.getAttribute("data-theme")!=="light"&&window.matchMedia("(prefers-color-scheme: dark)").matches);
+  const tileUrl=()=>"https://{s}.basemaps.cartocdn.com/"+(isDark()?"dark_all":"light_all")+"/{z}/{x}/{y}{r}.png";
+  let tiles=L.tileLayer(tileUrl(),{subdomains:"abcd",maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'});
+  let tileLoaded=false, autoSwitched=false, userToggled=false;
+  tiles.on("tileerror",()=>{ if(!tileLoaded&&!autoSwitched&&!userToggled){ autoSwitched=true; setMode("schematic",true); } });
+  tiles.on("tileload",()=>{ tileLoaded=true; if(autoSwitched&&!userToggled){ autoSwitched=false; setMode("streets"); } });
+  setTimeout(()=>{ if(!tileLoaded&&!userToggled&&state.mode==="streets"){ autoSwitched=true; setMode("schematic",true); } },4000);
+
+  const schem=L.layerGroup();
+  const roadsCase=L.layerGroup().addTo(schem), roads=L.layerGroup().addTo(schem);
+  L.polyline(GEO.river,{className:"g-water",weight:9,opacity:1,lineJoin:"round",interactive:false}).addTo(schem);
+  L.polyline(GEO.ring,{className:"g-case",weight:12,opacity:1,interactive:false}).addTo(roadsCase);
+  L.polyline(GEO.ring,{className:"g-road",weight:8,opacity:1,interactive:false}).addTo(roads);
+  Object.keys(GEO.roads).forEach(k=>{
+    const w=(k==="Freedom Pkwy")?5:9, w2=(k==="Freedom Pkwy")?3:6;
+    L.polyline(GEO.roads[k],{className:"g-case",weight:w,opacity:1,interactive:false,lineJoin:"round"}).addTo(roadsCase);
+    L.polyline(GEO.roads[k],{className:"g-road",weight:w2,opacity:1,interactive:false,lineJoin:"round"}).addTo(roads);
+  });
+  const lbl2=L.layerGroup();
+  GEO.labels.forEach(l=>L.marker([l[1],l[2]],{interactive:false,keyboard:false,zIndexOffset:-900,icon:L.divIcon({className:"maplbl",html:"<span>"+esc(l[0])+"</span>",iconSize:null})}).addTo(l[3]===2?lbl2:schem));
+  GEO.roadLabels.forEach(l=>L.marker([l[1],l[2]],{interactive:false,keyboard:false,zIndexOffset:-900,icon:L.divIcon({className:"maplbl rd",html:"<span>"+esc(l[0])+"</span>",iconSize:null})}).addTo(schem));
+
+  const rail=L.layerGroup().addTo(map);
+  Object.values(GEO.rail).forEach(r=>L.polyline(r.pts,{color:r.c,weight:3,opacity:.6,interactive:false,lineJoin:"round"}).addTo(rail));
+  GEO.stations.forEach(s=>{
+    L.circleMarker([s[1],s[2]],{radius:3.2,className:"g-stn",weight:1.2,fillOpacity:1,interactive:false}).addTo(rail);
+  });
+  const stLabels=L.layerGroup();
+  GEO.stations.forEach(s=>L.marker([s[1],s[2]],{interactive:false,keyboard:false,zIndexOffset:-800,icon:L.divIcon({className:"stlbl",html:"<span>"+esc(s[0])+"</span>",iconSize:null})}).addTo(stLabels));
+  function onZoom(){
+    const z=map.getZoom();
+    if(z>=13){ if(!map.hasLayer(stLabels)) stLabels.addTo(map);} else if(map.hasLayer(stLabels)) map.removeLayer(stLabels);
+    if(z>=12.5&&map.hasLayer(schem)){ if(!map.hasLayer(lbl2)) lbl2.addTo(map);} else if(map.hasLayer(lbl2)) map.removeLayer(lbl2);
+    const ps=z<=10.5?.62:z<=11.5?.78:z<=12.5?.9:1;
+    $("#map").style.setProperty("--ps",ps);
+  }
+  map.on("zoomend",onZoom);
+
+  const note=L.DomUtil.create("div","mapnote",$("#map")); note.textContent="";
+  tiles.addTo(map);
+  function setMode(m,auto){
+    state.mode=m;
+    if(m==="streets"){ tiles.setOpacity(1); if(map.hasLayer(schem)) map.removeLayer(schem); note.textContent="Street tiles: CARTO, OpenStreetMap data. Rail lines schematic."; }
+    else { tiles.setOpacity(0); if(!map.hasLayer(schem)) schem.addTo(map); note.textContent=auto?"Street tiles are blocked here. Schematic base: I-285, interstates, the river, MARTA rail.":"Schematic base: I-285, interstates, the river, MARTA rail."; }
+    const b=$("#modebtn"); b.textContent="Base: "+(m==="streets"?"streets":"schematic"); b.setAttribute("aria-pressed",m==="schematic"?"true":"false");
+    onZoom();
+  }
+  $("#modebtn").addEventListener("click",()=>{ userToggled=true; setMode(state.mode==="streets"?"schematic":"streets"); });
+  setMode("streets");
+  function retheme(){ const u=tileUrl(); if(tiles._url!==u) tiles.setUrl(u); }
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",retheme);
+  new MutationObserver(retheme).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+
+  /* markers */
+  const markers={};
+  SITES.forEach(s=>{
+    const sz=sizes[s.w];
+    const icon=L.divIcon({className:"pinwrap",iconSize:[sz,sz],iconAnchor:[sz/2,sz/2],html:'<div class="pin w'+s.w+'" style="--c:var(--c'+s.c+');--ink:var(--c'+s.c+'-ink);width:'+sz+'px;height:'+sz+'px" role="button" tabindex="0" aria-label="Site '+s.id+': '+esc(s.n)+'">'+s.id+'</div>'});
+    const m=L.marker(s.ll,{icon,keyboard:false,zIndexOffset:s.w*10,title:s.n}).addTo(map);
+    m.on("click",()=>select(s.id,true));
+    const pe=m.getElement()&&m.getElement().querySelector(".pin");
+    if(pe) pe.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); select(s.id,true);} });
+    markers[s.id]=m;
+  });
+
+  /* ---------- dossier ---------- */
+  function render(s){
+    const ev=s.ev.map(e=>'<li>'+esc(e.t)+'<div class="srcs">'+e.s.map(srcLink).join("")+(e.c!=="high"?'<span class="conf">'+(e.c==="med"?"medium":"low")+'</span>':"")+'</div></li>').join("");
+    const tags=s.why.map(k=>'<span class="tag">'+esc(WHY[k].n)+'</span>').join("");
+    const i=SITES.findIndex(x=>x.id===s.id), prev=SITES[(i-1+SITES.length)%SITES.length], next=SITES[(i+1)%SITES.length];
+    const scale={1:"one documented episode",2:"neighborhood scale",3:"corridor or decades-long"}[s.w];
+    $("#rail").innerHTML='<div class="dos" style="--c:var(--c'+s.c+')"><span class="cat"><i></i>'+esc(CAT[s.c].n)+'</span><span class="num">SITE '+s.id+' OF '+SITES.length+'</span><h3>'+esc(s.n)+'</h3><p class="h">'+esc(s.h)+'</p><p class="who"><b>Who it hits</b>'+esc(s.who)+'</p><p class="who"><b>Evidence</b><span class="weight">Scale: '+scale+'. Each claim links to the page it came from.</span></p><ol class="ev">'+ev+'</ol><div class="why"><b>Why it persists</b><div class="tags">'+tags+'</div>'+esc(s.note)+'</div><div class="nav"><button type="button" data-go="'+prev.id+'">&larr; '+prev.id+'</button><button type="button" data-go="'+next.id+'">'+next.id+' &rarr;</button><button type="button" id="fly">Zoom to site</button></div></div>';
+    $("#fly").addEventListener("click",()=>map.flyTo(s.ll,15,{duration:.8}));
+  }
+  function select(id,fromMap){
+    const s=byId[id]; if(!s) return;
+    state.sel=id;
+    Object.keys(markers).forEach(k=>{ const el=markers[k].getElement(); if(el){ const p=el.querySelector(".pin"); p&&p.classList.toggle("sel",+k===id);} });
+    document.querySelectorAll(".row").forEach(r=>r.classList.toggle("sel",+r.dataset.id===id));
+    render(s);
+    try{ history.replaceState(null,"","#s"+id); }catch(e){}
+    if(!fromMap){ const z=Math.max(map.getZoom(),13); map.flyTo(s.ll,z,{duration:.7}); }
+    if(window.innerWidth<=900){ $("#rail").scrollIntoView({behavior:"smooth",block:"start"}); }
+    else { $("#rail").scrollTop=0; }
+  }
+  document.addEventListener("click",e=>{
+    const b=e.target.closest("[data-go]"); if(b){ const id=+b.dataset.go; if(window.innerWidth>900) $(".stage").scrollIntoView({behavior:"smooth",block:"start"}); select(id,false); }
+  });
+
+  /* ---------- filters ---------- */
+  function visible(s){ return state.cats.has(s.c)&&(!state.why||s.why.includes(state.why)); }
+  function applyFilters(){
+    let n=0;
+    SITES.forEach(s=>{ const v=visible(s); if(v) n++; const el=markers[s.id].getElement(); if(el){ const p=el.querySelector(".pin"); p&&p.classList.toggle("dim",!v);} const r=document.querySelector('.row[data-id="'+s.id+'"]'); r&&r.classList.toggle("hide",!v); });
+    $("#count").textContent=n+" of "+SITES.length+" sites shown";
+  }
+  catKeys.forEach(k=>{
+    const b=document.createElement("button"); b.type="button"; b.className="chip cat"; b.setAttribute("aria-pressed","true"); b.style.setProperty("--c","var(--c"+k+")"); b.innerHTML='<span class="dot"></span>'+esc(CAT[k].n); b.title=CAT[k].d;
+    b.addEventListener("click",()=>{ if(state.cats.has(k)){ if(state.cats.size===1){ catKeys.forEach(x=>state.cats.add(x)); } else state.cats.delete(k);} else state.cats.add(k); document.querySelectorAll("#catchips .chip").forEach((c,i)=>c.setAttribute("aria-pressed",state.cats.has(catKeys[i])?"true":"false")); applyFilters(); });
+    $("#catchips").appendChild(b);
+  });
+  whyKeys.forEach(k=>{
+    const b=document.createElement("button"); b.type="button"; b.className="chip why"; b.setAttribute("aria-pressed","false"); b.textContent=WHY[k].n; b.title=WHY[k].d;
+    b.addEventListener("click",()=>{ state.why=(state.why===k)?null:k; document.querySelectorAll("#whychips .chip").forEach((c,i)=>c.setAttribute("aria-pressed",state.why===whyKeys[i]?"true":"false")); applyFilters(); });
+    $("#whychips").appendChild(b);
+  });
+
+  /* ---------- index ---------- */
+  $("#indexlist").innerHTML=SITES.map(s=>'<button type="button" class="row" data-id="'+s.id+'" data-go="'+s.id+'" style="--c:var(--c'+s.c+');--ink:var(--c'+s.c+'-ink)"><span class="n">'+s.id+'</span><span><span class="t">'+esc(s.n)+'</span><span class="d">'+esc(s.h)+'</span></span></button>').join("");
+
+  /* ---------- patterns ---------- */
+  $("#patternlist").innerHTML=PATTERNS.map(p=>'<div class="pat"><h3>'+esc(p.n)+'</h3><ul>'+p.f.map(f=>'<li>'+esc(f[0])+' <span class="srcs" style="display:inline-flex">'+[].concat(f[1]).map(srcLink).join("")+'</span></li>').join("")+'</ul><div class="sites"><span class="kicker" style="margin-right:4px">Sites</span>'+p.sites.map(sref).join("")+'</div></div>').join("");
+
+  /* ---------- numbers ---------- */
+  $("#numberlist").innerHTML=NUMBERS.map(n=>'<div class="tile"><div class="v">'+esc(n.v)+'</div><div class="l">'+esc(n.l)+'</div><div class="s">'+esc(n.y)+' · '+[].concat(n.s).map(srcLink).join(" · ")+'</div></div>').join("");
+
+  /* ---------- why ---------- */
+  $("#whylist").innerHTML=whyKeys.map(k=>{ const ids=SITES.filter(s=>s.why.includes(k)).map(s=>s.id); return '<div class="whyc"><h3>'+esc(WHY[k].n)+' <span class="mute" style="font-size:14px">'+ids.length+'</span></h3><div class="d">'+esc(WHY[k].d)+'</div><div class="sites" style="display:flex;flex-wrap:wrap;gap:4px">'+ids.map(sref).join("")+'</div></div>'; }).join("");
+
+  /* ---------- timeline ---------- */
+  $("#tl").innerHTML=TIMELINE.map(t=>'<li><span class="y">'+t[0]+'</span><span>'+esc(t[1])+'<span class="sites">'+t[2].map(sref).join("")+'</span></span></li>').join("");
+
+  /* ---------- gaps ---------- */
+  $("#gaplist").innerHTML=GAPS.map(g=>'<li>'+esc(g)+'</li>').join("");
+
+  /* ---------- sources ---------- */
+  const used={};
+  SITES.forEach(s=>s.ev.forEach(e=>e.s.forEach(k=>{ (used[k]=used[k]||new Set()).add(s.id); })));
+  PATTERNS.forEach(p=>p.f.forEach(f=>[].concat(f[1]).forEach(k=>{ used[k]=used[k]||new Set(); })));
+  NUMBERS.forEach(n=>[].concat(n.s).forEach(k=>{ used[k]=used[k]||new Set(); }));
+  const keys=Object.keys(used).filter(k=>SRC[k]).sort((a,b)=>SRC[a][0].localeCompare(SRC[b][0]));
+  $("#sourcelist").innerHTML=keys.map(k=>{ const r=SRC[k]; const ids=[...used[k]].sort((a,b)=>a-b); return '<li><a href="'+esc(r[1])+'" target="_blank" rel="noopener">'+esc(r[0])+'</a>'+(ids.length?' <span class="refs">sites '+ids.join(", ")+'</span>':'')+'</li>'; }).join("");
+
+  /* ---------- boot ---------- */
+  applyFilters();
+  const h=(location.hash||"").match(/^#s(\d+)$/);
+  const start=(h&&byId[+h[1]])?+h[1]:1;
+  select(start,true);
+  setTimeout(()=>{ map.invalidateSize(); map.fitBounds(HOME); },60);
+  window.addEventListener("resize",()=>map.invalidateSize());
+})();
+</script>
+
+</body>
+</html>
