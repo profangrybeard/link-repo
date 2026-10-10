@@ -1,5 +1,5 @@
 {
-  "updated": "5 Oct 2026",
+  "updated": "10 Oct 2026",
   "categories": [
     { "name": "Software & Setup", "items": [
       {"g":"Engines","t":"Unity Hub","u":"https://unity.com/unity-hub"},
@@ -93,6 +93,16 @@
       {"g":"Cinematography","t":"GDC — The cinematography of God of War","u":"https://www.youtube.com/watch?v=z0-ddTqz0XE"},
       {"g":"Character & model sheets","t":"Model sheets & production drawings","u":"https://livlily.blogspot.com/2010/11/model-sheets-production-drawings.html"},
       {"g":"Character & model sheets","t":"Reference Catalogue — hyper-detailed animation, 1988–1999","u":"https://profangrybeard.github.io/90sDGA/"}
+    ]},
+    { "name": "Light & Form", "items": [
+      {"g":"Start here","t":"Peonypaint — Basic rules of light and shadow for drawing (8 min, pencil)","a":"2026-10-10","u":"https://www.youtube.com/watch?v=ljzaqOpQglg"},
+      {"g":"Start here","t":"Proko — Shading light and form: basics (terminator, core & cast shadow, reflected light, halftone)","a":"2026-10-10","u":"https://www.proko.com/lesson/shading-light-and-form-basics"},
+      {"g":"Start here","t":"Marco Bucci — Light and shadow: keep the light family and shadow family separate (10 min)","a":"2026-10-10","u":"https://www.youtube.com/watch?v=xcCJ2CU-bFw"},
+      {"g":"Exercises","t":"Dorian Iten / Proko — Light probes: sketch the lighting of a movie still onto a sphere (free assignment)","a":"2026-10-10","u":"https://www.proko.com/course-lesson/light-probes/assignments"},
+      {"g":"Books","t":"James Gurney — Color and Light: A Guide for the Realist Painter","a":"2026-10-10","u":"https://illustrationhistory.org/resources/color-and-light-a-guide-for-the-realist-painter-by-james-gurney"},
+      {"g":"Books","t":"James Gurney — Gurney Journey blog (free companion to the book)","a":"2026-10-10","u":"https://gurneyjourney.blogspot.com/"},
+      {"g":"Books","t":"Scott Robertson & Thomas Bertling — How to Render: light, shadow & reflectivity by hand","a":"2026-10-10","u":"https://designstudiopress.com/product/how-to-render"},
+      {"g":"Books","t":"Richard Yot — Light for Visual Artists (film lighting artist, uses game & film stills)","a":"2026-10-10","u":"https://hachette.co.uk/titles/richard-yot/light-for-visual-artists/9781786277558"}
     ]},
     { "name": "Physics for Games", "items": [
       {"t":"The Physics Classroom — Newton's first law","u":"https://www.physicsclassroom.com/class/newtlaws/Lesson-1/Newton-s-First-Law"},
