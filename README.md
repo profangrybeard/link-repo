@@ -42,3 +42,7 @@ Tell me in class or send me a message, and I'll update the page.
 ---
 
 <sub>For maintainers: the page is `index.html`, and all links live in `links.json`. Each item has a title (`t`), a URL (`u`), and optionally a subgroup (`g`) within its category. Pushing to `main` publishes the change through GitHub Pages.</sub>
+
+## License
+
+Copyright (c) 2026 Tim Lindsey. Licensed [CC BY-NC-SA 4.0](LICENSE). You can share and adapt it for non-commercial use, with credit, under the same license. The linked sites belong to their owners.
