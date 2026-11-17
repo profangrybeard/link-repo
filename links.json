@@ -1,5 +1,5 @@
 {
-  "updated": "3 Nov 2026",
+  "updated": "17 Nov 2026",
   "categories": [
     { "name": "Software & Setup", "items": [
       {"g":"Engines","t":"Unity Hub","u":"https://unity.com/unity-hub"},
@@ -44,7 +44,8 @@
       {"g":"Performance","t":"Ultimate guide to profiling Unity games","u":"https://unity.com/resources/ultimate-guide-to-profiling-unity-games"},
       {"g":"Tutorials","t":"Catlike Coding — Hex map, part 1","u":"https://catlikecoding.com/unity/tutorials/hex-map/part-1/"},
       {"g":"Tutorials","t":"Unity 2023 Cookbook, fifth edition — source code","u":"https://github.com/PacktPublishing/Unity-2023-Cookbook-Fifth-Edition"},
-      {"g":"Tutorials","t":"Stacey Haffner — Unity tutorials, programming tips & AI workflows (YouTube)","u":"https://www.youtube.com/@staceyhaffner"}
+      {"g":"Tutorials","t":"Stacey Haffner — Unity tutorials, programming tips & AI workflows (YouTube)","u":"https://www.youtube.com/@staceyhaffner"},
+      {"g":"Simulation","t":"Sebastian Lague — Coding Adventure: Simulating Fluids (48 min, C# & HLSL compute shaders)","a":"2026-11-17","u":"https://www.youtube.com/watch?v=rSKMYc1CQHE"}
     ]},
     { "name": "Unreal", "items": [
       {"t":"Tom Looman — Unreal Engine tutorials & courses","u":"https://tomlooman.com/"},
